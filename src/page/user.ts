@@ -38,6 +38,11 @@ ipcRenderer.on('userInfo', (event, res: UserAndPrescription) => {
 
   name.innerText = res.name;
   birth.innerText = res.birth;
-  prescription.innerText = res.prescription.prescription;
-  prescriptionDate.innerText = res.prescription.prescription_date;
+
+  if (!res.prescription) {
+    prescription.innerText = 'Não há prescrições';
+  } else {
+    prescription.innerText = res.prescription.prescription;
+    prescriptionDate.innerText = res.prescription.prescription_date;
+  }
 });
