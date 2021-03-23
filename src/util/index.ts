@@ -15,8 +15,8 @@ export interface UserAndPrescriptions {
   sex: string;
   birth: string;
   prescriptions: Prescription[];
-  created_at: Date;
-  updated_at: Date;
+  created_at?: Date;
+  updated_at?: Date;
 }
 
 export interface UserAndPrescription {
