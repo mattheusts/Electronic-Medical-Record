@@ -1,5 +1,8 @@
-import { createConnection, Connection, getRepository } from 'typeorm';
+import { createConnection, Connection } from 'typeorm';
 import { v4 as uuid } from 'uuid';
+import { app } from 'electron';
+import * as path from 'path';
+import * as fs from 'fs';
 import { Prescription } from './models/Prescription';
 import { User } from './models/User';
 import { usersAndPrescription } from '../util';
@@ -14,7 +17,10 @@ export default class Database {
   public async init(): Promise<void> {
     this.connection = await createConnection({
       type: 'sqlite',
-      database: 'Electronic-Medical-Record.sqlite',
+      database: path.join(
+        path.join(app.getPath('userData'), 'electronic-medical-record'),
+        'Electronic-Medical-Record.sqlite'
+      ),
       entities: [User, Prescription],
     });
 
