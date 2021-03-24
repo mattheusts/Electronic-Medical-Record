@@ -31,3 +31,22 @@ export interface UserAndPrescription {
   created_at?: Date;
   updated_at?: Date;
 }
+
+export interface PDFPrescription {
+  date: string;
+  prescription: string;
+}
+
+export interface Person {
+  name: string;
+  naturalness: string;
+  mother: string;
+  dad: string;
+  sex: string;
+  birth: string;
+}
+
+export interface PDFUserPrescription {
+  person: Person;
+  prescriptions: PDFPrescription[];
+}
