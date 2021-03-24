@@ -2,13 +2,36 @@
   "name": "electronic-medical-record",
   "version": "1.0.0",
   "description": "Electron application written with Typescript",
+  "main": "dist/main.js",
   "scripts": {
-    "build": "tsc",
-    "build-dev": "tsnd",
+    "postinstall": "electron-builder install-app-deps",
+    "electron:build": "tsc -p electron && electron-builder",
     "lint": "eslint -c .eslintrc --ext .ts ./src",
     "start:tsc": "tsc -w | pino-pretty -c",
     "start:nodemon": "nodemon --exec electron ./dist/main.js",
-    "start": "concurrently \"yarn start:tsc\" \"yarn start:nodemon\""
+    "start": "concurrently \"yarn start:tsc\" \"yarn start:nodemon\"",
+    "pre-pack": "electron-compile --appDir . ./src",
+    "package": "electron-builder --dir",
+    "dist": "build"
+  },
+  "build": {
+    "appId": "com.example.electron-medic",
+    "files": [
+      "dist/**/*",
+      "public/**/*",
+      "node_modules/**/*",
+      "package.json"
+    ],
+    "directories": {
+      "buildResources": "public/**/*"
+    },
+    "win": {
+      "icon": "public/img/medical-records.png"
+    },
+    "extraFiles": [
+      "credentials"
+    ],
+    "publish": null
   },
   "repository": "https://github.com/matthaw/Electronic-Medical-Record",
   "keywords": [
@@ -20,6 +43,7 @@
   "devDependencies": {
     "@types/electron": "^1.6.10",
     "@types/jquery": "^3.5.5",
+    "@types/node": "^14.14.35",
     "@types/pdfkit": "^0.11.0",
     "@types/uuid": "^8.3.0",
     "@typescript-eslint/eslint-plugin": "^3.10.1",
@@ -27,28 +51,22 @@
     "concurrently": "^6.0.0",
     "cross-env": "^7.0.3",
     "electron": "^9.4.0",
+    "electron-builder": "^22.10.5",
     "electron-is-dev": "^2.0.0",
-    "electron-reload": "^1.5.0",
     "eslint": "^7.22.0",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-config-prettier": "^8.1.0",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-jsx-a11y": "^6.4.1",
     "eslint-plugin-prettier": "^3.3.1",
-    "eslint-plugin-react": "^7.22.0",
-    "eslint-plugin-react-hooks": "^4.2.0",
     "nodemon": "^2.0.7",
     "pino-pretty": "^4.7.1",
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1",
     "typescript": "^3.9.5"
   },
   "dependencies": {
-    "@types/query-string": "^6.3.0",
+    "electron-reload": "^1.5.0",
     "jQuery": "^1.7.4",
-    "material-design-icons": "^3.0.1",
     "pdfkit": "^0.11.0",
-    "query-string": "^7.0.0",
     "reflect-metadata": "^0.1.13",
     "sqlite3": "^5.0.2",
     "typeface-roboto": "^1.1.13",
