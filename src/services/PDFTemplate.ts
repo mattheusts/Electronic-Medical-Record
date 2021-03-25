@@ -55,7 +55,7 @@ function generateTableRow(
   date?: string,
   prescription?: string
 ) {
-  doc.fontSize(10).text(date, 50, y).text(prescription, 150, y);
+  doc.fontSize(10).text(date, 60, y).text(prescription, 150, y);
 }
 
 function generateHr(doc: PDFKit.PDFDocument, y: number) {
