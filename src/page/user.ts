@@ -21,9 +21,15 @@ window.onload = function () {
   btn3.className = 'btn btn-success';
   btn3.setAttribute('onclick', `printPDF('${id}')`);
 
+  const btn4 = document.createElement('button');
+  btn4.innerText = 'Deletar';
+  btn4.className = 'btn btn-danger';
+  btn4.setAttribute('onclick', `deleteUser('${id}')`);
+
   divButtons.appendChild(btn1);
   divButtons.appendChild(btn2);
   divButtons.appendChild(btn3);
+  divButtons.appendChild(btn4);
 };
 
 ipcRenderer.on('userInfo', (event, res: UserAndPrescription) => {

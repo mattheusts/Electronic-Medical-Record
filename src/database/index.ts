@@ -167,4 +167,12 @@ export default class Database {
     }
     return usersAndPrescription;
   }
+
+  public async deleteUserAndPrescription(id: string): Promise<void> {
+    const userRepository = this.connection.getRepository(User);
+    await userRepository.delete({ id: id });
+
+    const prescriptionRepository = this.connection.getRepository(Prescription);
+    await prescriptionRepository.delete({ user_id: id });
+  }
 }
