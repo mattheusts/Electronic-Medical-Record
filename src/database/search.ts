@@ -5,7 +5,6 @@ export interface UserSearch {
   id?: string;
   name: string;
   birth: string;
-  prescription_date: string;
 }
 
 export class Search {
@@ -20,7 +19,6 @@ export class Search {
         id: user.id,
         name: user.name,
         birth: user.birth,
-        prescription_date: prescription.prescription_date,
       });
     }
 
