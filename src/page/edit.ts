@@ -1,6 +1,5 @@
 import { ipcRenderer } from 'electron';
 import { User } from '../database/models/User';
-import { Render } from './render';
 
 window.onload = function () {
   ipcRenderer.send('editInit', window.location.search.split('=')[1]);
@@ -25,20 +24,25 @@ ipcRenderer.on('editUserInfo', (event, user: User) => {
   birth.value = user.birth;
 
   if (user.sex.toLowerCase() === 'masculino') {
-    document.getElementById('male').checked = true;
+    const male = document.getElementById('male') as HTMLInputElement;
+    male.checked = true;
   } else if (user.sex.toLowerCase() === 'feminino') {
-    document.getElementById('female').checked = true;
+    const female = document.getElementById('female') as HTMLInputElement;
+    female.checked = true;
   }
 });
 
 updateUserButton.addEventListener('click', () => {
+  const sex = document.querySelector(
+    'input[name="sex"]:checked'
+  ) as HTMLInputElement;
   const user: User = {
     id: id,
     name: name.value,
     naturalness: naturalness.value,
     mother: mother.value,
     dad: dad.value,
-    sex: document.querySelector('input[name="sex"]:checked').value,
+    sex: sex.value,
     birth: birth.value,
     updated_at: new Date(),
   };
