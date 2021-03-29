@@ -43,7 +43,6 @@ function createWindow() {
       nodeIntegration: true,
     },
     width: width,
-    // icon: path.join(__dirname, '../public/new-icon.jpg'),
   });
 
   // global.database = new Database();
@@ -52,7 +51,7 @@ function createWindow() {
   mainWindow.loadFile(path.join(__dirname, '../public/search.html'));
 
   // Open the DevTools.
-  // mainWindow.webContents.openDevTools();
+  mainWindow.webContents.openDevTools();
 }
 
 // This method will be called when Electron has finished
@@ -79,16 +78,8 @@ app.on('window-all-closed', () => {
 
 const database: Database = new Database();
 
-ipcMain.on('form-data', async (err, result) => {
-  const user = await database.insertUser(
-    result.name,
-    result.naturalness,
-    result.mother,
-    result.dad,
-    result.sex,
-    result.birth
-  );
-
+ipcMain.on('form-data', async (err, result: User) => {
+  await database.insertUser(result);
   mainWindow.loadFile(path.join(__dirname, '../public/search.html'));
 });
 

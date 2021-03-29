@@ -29,30 +29,25 @@ export default class Database {
     }
   }
 
-  public async insertUser(
-    name: string,
-    naturalness: string,
-    mother: string,
-    dad: string,
-    sex: string,
-    birth: string,
-    created_at?: Date,
-    updated_at?: Date
+  public async insertUser(user: User
   ): Promise<User> {
     const userRepository = this.connection.getRepository(User);
-    const user: User = {
+    const newUser: User = {
       id: uuid(),
-      name: name,
-      naturalness: naturalness,
-      mother: mother,
-      dad: dad,
-      sex: sex,
-      birth: birth,
-      created_at: created_at || new Date(),
-      updated_at: updated_at || new Date(),
+      name: user.name,
+      naturalness: user.naturalness,
+      mother: user.mother,
+      dad: user.dad,
+      sex: user.sex,
+      birth: user.birth,
+      religion: user.religion,
+      schooling: user.schooling,
+      profession: user.profession,
+      created_at: user.created_at || new Date(),
+      updated_at: user.updated_at || new Date(),
     };
 
-    return userRepository.save(user);
+    return userRepository.save(newUser);
   }
 
   public async insertPrescription(
