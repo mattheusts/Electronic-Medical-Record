@@ -30,6 +30,15 @@ export class User {
   @Column()
   birth: string;
 
+  @Column()
+  religion: string;
+
+  @Column()
+  schooling: string
+
+  @Column()
+  profession: string
+
   @CreateDateColumn()
   created_at?: Date;
 
