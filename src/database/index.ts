@@ -2,10 +2,11 @@ import { createConnection, Connection } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import { app } from 'electron';
 import * as path from 'path';
-import * as fs from 'fs';
 import { Prescription } from './models/Prescription';
 import { User } from './models/User';
 import { usersAndPrescription } from '../util';
+import { PhotoInfo } from '../util/Photo';
+import { File } from './models/File';
 
 export default class Database {
   private connection: Connection;
@@ -21,7 +22,7 @@ export default class Database {
         path.join(app.getPath('userData'), 'electronic-medical-record'),
         'Electronic-Medical-Record.sqlite'
       ),
-      entities: [User, Prescription],
+      entities: [User, Prescription, File],
     });
 
     if (this.connection.isConnected) {
@@ -29,8 +30,7 @@ export default class Database {
     }
   }
 
-  public async insertUser(user: User
-  ): Promise<User> {
+  public async insertUser(user: User): Promise<User> {
     const userRepository = this.connection.getRepository(User);
     const newUser: User = {
       id: uuid(),
@@ -51,23 +51,29 @@ export default class Database {
   }
 
   public async insertPrescription(
-    userID: string,
-    prescriptionDescription: string,
-    prescriptionDate: string,
-    created_at?: Date,
-    updated_at?: Date
+    prescription: Prescription
   ): Promise<Prescription> {
     const prescriptionRepository = this.connection.getRepository(Prescription);
-    const prescription: Prescription = {
+    const newPrescription: Prescription = {
       id: uuid(),
-      prescription: prescriptionDescription,
-      prescription_date: prescriptionDate,
-      user_id: userID,
-      created_at: created_at || new Date(),
-      updated_at: updated_at || new Date(),
+      ...prescription,
+      created_at: prescription.created_at || new Date(),
+      updated_at: prescription.updated_at || new Date(),
     };
 
-    return prescriptionRepository.save(prescription);
+    return prescriptionRepository.save(newPrescription);
+  }
+
+  public async intertFile(file: PhotoInfo): Promise<File> {
+    const fileRepository = this.connection.getRepository(File);
+    const newFile: File = {
+      ...file,
+      id: file.id || uuid(),
+      created_at: file.created_at || new Date(),
+      updated_at: file.updated_at || new Date(),
+    };
+
+    return fileRepository.save(newFile);
   }
 
   public async getAllUsers(): Promise<User[]> {
