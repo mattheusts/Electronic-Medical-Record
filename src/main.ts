@@ -173,11 +173,8 @@ ipcMain.on('sendPrescriptions', async (err, res) => {
 });
 
 ipcMain.on('savePrescription', async (err, res: Prescription) => {
-  const prescription = await database.insertPrescription(
-    res.user_id,
-    res.prescription,
-    res.prescription_date
-  );
+  const prescription = await database
+    .insertPrescription(..res);
 
   mainWindow.loadFile(path.join(__dirname, '../public/user.html'), {
     query: { id: res.user_id },
