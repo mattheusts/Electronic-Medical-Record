@@ -19,9 +19,6 @@ export class Prescription {
   history_current: string;
 
   @Column()
-  physical_exam: string;
-
-  @Column()
   cardiovascular_system: string;
 
   @Column()
@@ -37,7 +34,7 @@ export class Prescription {
   vesicular_murmur: string;
 
   @Column()
-  oxygen_Saturation: string;
+  oxygen_saturation: string;
 
   @Column()
   adb: string;
@@ -62,6 +59,39 @@ export class Prescription {
 
   @Column()
   ducts: string;
+
+  @Column()
+  otoscopy: string;
+
+  @Column()
+  ophthalmoscopy: string;
+
+  @Column()
+  mmii: string;
+
+  @Column()
+  romberg: string;
+
+  @Column()
+  ceifante: boolean;
+
+  @Column()
+  ataxica_talonante: boolean;
+
+  @Column()
+  escarvante: boolean;
+
+  @Column()
+  anserina: boolean;
+
+  @Column()
+  cerebelar: boolean;
+
+  @Column()
+  magnetica: boolean;
+
+  @Column()
+  parkinsoniana: boolean;
 
   @Column()
   prescription: string;
