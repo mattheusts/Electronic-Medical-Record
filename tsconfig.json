@@ -1,12 +1,14 @@
 {
   "compilerOptions": {
-    "lib": ["dom", "ES2019"],
+    "skipLibCheck": true,
+    "lib": ["DOM", "ES2019"],
     "target": "ES2019",
     "moduleResolution": "node",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "module": "commonjs",
-    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
     "removeComments": true,
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
