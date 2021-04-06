@@ -90,26 +90,14 @@ const search = new Search();
 ipcMain.on('init', async (err, res) => {
   const users = await database.getAllUsers();
   const userSearch = await search.searchAll(users);
-
-  const render = Render.renderSeachAll(userSearch);
-
-  mainWindow.webContents.send('searchAll', render);
+  mainWindow.webContents.send('searchAll', userSearch);
 });
 
 ipcMain.on('searchByName', async (err, res) => {
   const users = await database.searchByName(res);
   const userSearch = await search.searchAll(users);
 
-  let render = '';
-
-  if (users.length > 0) {
-    render = Render.renderSeachAll(userSearch);
-  } else {
-    render =
-      '<h2 class="justify-content-center text-secondary">Paciente não encontrado!</h2>';
-  }
-
-  mainWindow.webContents.send('searchAll', render);
+  mainWindow.webContents.send('searchAll', userSearch);
 });
 
 // User info
@@ -173,8 +161,8 @@ ipcMain.on('sendPrescriptions', async (err, res) => {
 });
 
 ipcMain.on('savePrescription', async (err, res: Prescription) => {
-  const prescription = await database
-    .insertPrescription(..res);
+  // const prescription = await database
+  //   .insertPrescription(..res);
 
   mainWindow.loadFile(path.join(__dirname, '../public/user.html'), {
     query: { id: res.user_id },

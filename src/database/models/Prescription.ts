@@ -12,11 +12,34 @@ export class Prescription {
   @PrimaryGeneratedColumn('uuid')
   readonly id?: string;
 
+  // Exame neurológico
+  @Column()
+  neurological_examination: string;
+
+  // Exame Clínicos
+
   @Column()
   main_complaint: string;
 
   @Column()
+  family_history: string;
+
+  @Column()
   history_current: string;
+
+  @Column()
+  social_history: string;
+
+  @Column()
+  previous_pathological_history: string;
+
+  @Column()
+  physiological_history: string;
+
+  @Column()
+  pharmaceutical_history: string;
+
+  // Exame físico
 
   @Column()
   cardiovascular_system: string;
@@ -31,34 +54,13 @@ export class Prescription {
   respiratory_system: string;
 
   @Column()
-  vesicular_murmur: string;
-
-  @Column()
   oxygen_saturation: string;
 
   @Column()
   adb: string;
 
   @Column()
-  upper_limbs: string;
-
-  @Column()
-  previous_pathological_history: string;
-
-  @Column()
-  neurological_examination: string;
-
-  @Column()
-  family_history: string;
-
-  @Column()
-  social_history: string;
-
-  @Column()
-  physiological_history: string;
-
-  @Column()
-  ducts: string;
+  mmii: string;
 
   @Column()
   otoscopy: string;
@@ -67,10 +69,9 @@ export class Prescription {
   ophthalmoscopy: string;
 
   @Column()
-  mmii: string;
-
-  @Column()
   romberg: string;
+
+  // Marcha
 
   @Column()
   ceifante: boolean;
@@ -93,8 +94,82 @@ export class Prescription {
   @Column()
   parkinsoniana: boolean;
 
+  // Diagnóstico sindrômico
+
+  @Column()
+  cognitivo: boolean;
+
+  @Column()
+  convulsive: boolean;
+
+  @Column()
+  intracranial_hypertension: boolean;
+
+  @Column()
+  meningeal: boolean;
+
+  @Column()
+  motora: boolean;
+
+  @Column()
+  sensitiva: boolean;
+
+  @Column()
+  hemiparetica: boolean;
+
+  @Column()
+  paraparetica: boolean;
+
+  @Column()
+  tetraparetica: boolean;
+
+  @Column()
+  monoparetica: boolean;
+
+  @Column()
+  nmi: string;
+
+  // Sindromes Relacionados a Função do Sistema Nervoso Autonomo
+
+  @Column()
+  cardiovascular: boolean;
+
+  @Column()
+  respiratory: boolean;
+
+  @Column()
+  digestive: boolean;
+
+  @Column()
+  sudorese: boolean;
+
+  @Column()
+  control_of_sphincters_and_bladder: boolean;
+
+  // Sindromes Sensitivas
+
+  @Column()
+  hypoesthesias: boolean;
+
+  @Column()
+  paresthesia: boolean;
+
+  @Column()
+  hyperalgesia: boolean;
+
+  // Diagnóstico
+
   @Column()
   prescription: string;
+
+  @Column()
+  requested_exams: string;
+
+  @Column()
+  notes: string;
+
+  @Column()
+  exam_results: string;
 
   @Column()
   prescription_date: string;

@@ -28,9 +28,6 @@ savePrescriptions.addEventListener('click', function (event: Event) {
   const history_current = document.getElementById(
     'history_current'
   ) as HTMLInputElement;
-  const physical_exam = document.getElementById(
-    'physical_exam'
-  ) as HTMLInputElement;
   const cardiovascular_system = document.getElementById(
     'cardiovascular_system'
   ) as HTMLInputElement;
@@ -41,16 +38,7 @@ savePrescriptions.addEventListener('click', function (event: Event) {
   const respiratory_system = document.getElementById(
     'respiratory_system'
   ) as HTMLInputElement;
-  const vesicular_murmur = document.getElementById(
-    'vesicular_murmur'
-  ) as HTMLInputElement;
-  const oxygen_Saturation = document.getElementById(
-    'oxygen_Saturation'
-  ) as HTMLInputElement;
   const adb = document.getElementById('adb') as HTMLInputElement;
-  const upper_limbs = document.getElementById(
-    'upper_limbs'
-  ) as HTMLInputElement;
   const previous_pathological_history = document.getElementById(
     'previous_pathological_history'
   ) as HTMLInputElement;
@@ -66,7 +54,6 @@ savePrescriptions.addEventListener('click', function (event: Event) {
   const physiological_history = document.getElementById(
     'physiological_history'
   ) as HTMLInputElement;
-  const ducts = document.getElementById('ducts') as HTMLInputElement;
 
   const prescriptionDate = document.getElementById(
     'prescription_date'
@@ -78,21 +65,16 @@ savePrescriptions.addEventListener('click', function (event: Event) {
   const res: Prescription = {
     main_complaint: main_complaint.value,
     history_current: history_current.value,
-    physical_exam: physical_exam.value,
     cardiovascular_system: cardiovascular_system.value,
     blood_pressure: blood_pressure.value,
     heart_rate: heart_rate.value,
     respiratory_system: respiratory_system.value,
-    vesicular_murmur: vesicular_murmur.value,
-    oxygen_Saturation: oxygen_Saturation.value,
     adb: adb.value,
-    upper_limbs: upper_limbs.value,
     previous_pathological_history: previous_pathological_history.value,
     neurological_examination: neurological_examination.value,
     family_history: family_history.value,
     social_history: social_history.value,
     physiological_history: physiological_history.value,
-    ducts: ducts.value,
     prescription_date: prescriptionDate.value,
     prescription: prescription.value,
     user_id: id,
@@ -150,6 +132,8 @@ document.getElementById('files').onchange = function () {
   gallery.innerHTML = '';
 
   const fileList = Array.from(this.files);
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const files: PhotoInfo[] = fileList.map((file: any) => {
     return {
       name: file.name,
