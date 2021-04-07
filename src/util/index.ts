@@ -14,6 +14,9 @@ export interface UserAndPrescriptions {
   dad: string;
   sex: string;
   birth: string;
+  religion: string;
+  schooling: string;
+  profession: string;
   prescriptions: Prescription[];
   created_at?: Date;
   updated_at?: Date;

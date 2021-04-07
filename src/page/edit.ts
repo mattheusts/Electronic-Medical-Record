@@ -11,6 +11,9 @@ const naturalness = document.getElementById('naturalness') as HTMLInputElement;
 const mother = document.getElementById('mother') as HTMLInputElement;
 const dad = document.getElementById('dad') as HTMLInputElement;
 const birth = document.getElementById('birth') as HTMLInputElement;
+const religion = document.getElementById('religion') as HTMLInputElement;
+const schooling = document.getElementById('schooling') as HTMLInputElement;
+const profession = document.getElementById('profession') as HTMLInputElement;
 const updateUserButton = document.getElementById(
   'updateUser'
 ) as HTMLInputElement;
@@ -22,6 +25,9 @@ ipcRenderer.on('editUserInfo', (event, user: User) => {
   mother.value = user.mother;
   dad.value = user.dad;
   birth.value = user.birth;
+  religion.value = user.religion;
+  schooling.value = user.schooling;
+  profession.value = user.profession;
 
   if (user.sex.toLowerCase() === 'masculino') {
     const male = document.getElementById('male') as HTMLInputElement;
@@ -44,6 +50,9 @@ updateUserButton.addEventListener('click', () => {
     dad: dad.value,
     sex: sex.value,
     birth: birth.value,
+    religion: religion.value,
+    schooling: schooling.value,
+    profession: profession.value,
     updated_at: new Date(),
   };
 
