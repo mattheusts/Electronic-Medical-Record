@@ -2,6 +2,8 @@ import { ipcRenderer } from 'electron';
 import { Prescription } from '../database/models/Prescription';
 import { UserAndPrescriptions } from '../util';
 import { PhotoUpload, PhotoInfo } from '../util/Photo';
+import { inputFields } from './prescriptionsFields';
+import { Render } from './render';
 
 export const photosUpload = new PhotoUpload();
 
@@ -22,61 +24,135 @@ window.onload = () => {
 
 savePrescriptions.addEventListener('click', function (event: Event) {
   event.preventDefault();
-  const main_complaint = document.getElementById(
-    'main_complaint'
-  ) as HTMLInputElement;
-  const history_current = document.getElementById(
-    'history_current'
-  ) as HTMLInputElement;
-  const cardiovascular_system = document.getElementById(
-    'cardiovascular_system'
-  ) as HTMLInputElement;
-  const blood_pressure = document.getElementById(
-    'blood_pressure'
-  ) as HTMLInputElement;
-  const heart_rate = document.getElementById('heart_rate') as HTMLInputElement;
-  const respiratory_system = document.getElementById(
-    'respiratory_system'
-  ) as HTMLInputElement;
-  const adb = document.getElementById('adb') as HTMLInputElement;
-  const previous_pathological_history = document.getElementById(
-    'previous_pathological_history'
-  ) as HTMLInputElement;
-  const neurological_examination = document.getElementById(
-    'neurological_examination'
-  ) as HTMLInputElement;
-  const family_history = document.getElementById(
-    'family_history'
-  ) as HTMLInputElement;
-  const social_history = document.getElementById(
-    'social_history'
-  ) as HTMLInputElement;
-  const physiological_history = document.getElementById(
-    'physiological_history'
-  ) as HTMLInputElement;
 
-  const prescriptionDate = document.getElementById(
-    'prescription_date'
-  ) as HTMLInputElement;
-  const prescription = document.getElementById(
-    'prescription'
-  ) as HTMLInputElement;
+  const {
+    neurological_examination,
+    main_complaint,
+    family_history,
+    history_current,
+    social_history,
+    previous_pathological_history,
+    physiological_history,
+    pharmaceutical_history,
+
+    // Exame físico
+    cardiovascular_system,
+    blood_pressure,
+    heart_rate,
+    respiratory_system,
+    oxygen_saturation,
+    adb,
+    mmii,
+    otoscopy,
+    ophthalmoscopy,
+    romberg,
+
+    // Marcha
+    ceifante,
+    ataxica_talonante,
+    escarvante,
+    anserina,
+    cerebelar,
+    magnetica,
+    parkinsoniana,
+
+    // Diagnóstico sindrômico
+    cognitivo,
+    convulsive,
+    intracranial_hypertension,
+    meningeal,
+    motora,
+    sensitiva,
+    hemiparetica,
+    paraparetica,
+    tetraparetica,
+    monoparetica,
+    nmi,
+
+    // Sindromes Relacionados a Função do Sistema Nervoso Autonomo
+    cardiovascular,
+    respiratory,
+    digestive,
+    sudorese,
+    control_of_sphincters_and_bladder,
+
+    // Sindromes Sensitivas
+    hypoesthesias,
+    paresthesia,
+    hyperalgesia,
+
+    // Diagnóstico
+    prescription,
+    requested_exams,
+    notes,
+    exam_results,
+    prescription_date,
+  } = inputFields();
 
   const res: Prescription = {
+    neurological_examination: neurological_examination.value,
     main_complaint: main_complaint.value,
+    family_history: family_history.value,
     history_current: history_current.value,
+    social_history: social_history.value,
+    previous_pathological_history: previous_pathological_history.value,
+    physiological_history: physiological_history.value,
+    pharmaceutical_history: pharmaceutical_history.value,
+
+    // Exame físico
     cardiovascular_system: cardiovascular_system.value,
     blood_pressure: blood_pressure.value,
     heart_rate: heart_rate.value,
     respiratory_system: respiratory_system.value,
+    oxygen_saturation: oxygen_saturation.value,
     adb: adb.value,
-    previous_pathological_history: previous_pathological_history.value,
-    neurological_examination: neurological_examination.value,
-    family_history: family_history.value,
-    social_history: social_history.value,
-    physiological_history: physiological_history.value,
-    prescription_date: prescriptionDate.value,
+    mmii: mmii.value,
+    otoscopy: otoscopy.value,
+    ophthalmoscopy: ophthalmoscopy.value,
+    romberg: romberg.value,
+
+    // Marcha
+    ceifante: ceifante.checked,
+    ataxica_talonante: ataxica_talonante.checked,
+    escarvante: escarvante.checked,
+    anserina: anserina.checked,
+    cerebelar: cerebelar.checked,
+    magnetica: magnetica.checked,
+    parkinsoniana: parkinsoniana.checked,
+
+    // Diagnóstico sindrômico
+    cognitivo: cognitivo.checked,
+    convulsive: convulsive.checked,
+    intracranial_hypertension: intracranial_hypertension.checked,
+    meningeal: meningeal.checked,
+    motora: motora.checked,
+    sensitiva: sensitiva.checked,
+    hemiparetica: hemiparetica.checked,
+    paraparetica: paraparetica.checked,
+    tetraparetica: tetraparetica.checked,
+    monoparetica: monoparetica.checked,
+    nmi: nmi.value,
+
+    // Sindromes Relacionados a Função do Sistema Nervoso Autonomo
+    cardiovascular: cardiovascular.checked,
+    respiratory: respiratory.checked,
+    digestive: digestive.checked,
+    sudorese: sudorese.checked,
+    control_of_sphincters_and_bladder:
+      control_of_sphincters_and_bladder.checked,
+
+    // Sindromes Sensitivas
+    hypoesthesias: hypoesthesias.checked,
+    paresthesia: paresthesia.checked,
+    hyperalgesia: hyperalgesia.checked,
+
+    // Diagnóstico
     prescription: prescription.value,
+    requested_exams: requested_exams.value,
+    notes: notes.value,
+    exam_results: exam_results.value,
+    prescription_date: prescription_date.value,
+
     user_id: id,
   };
 
@@ -85,44 +161,12 @@ savePrescriptions.addEventListener('click', function (event: Event) {
 
 ipcRenderer.on(
   'newPrescriptions',
-  (event, userAndPrescription: UserAndPrescriptions) => {
-    name.innerText = userAndPrescription.name;
-    birth.innerText = userAndPrescription.birth;
+  (event, userAndPrescriptions: UserAndPrescriptions) => {
+    name.innerText = userAndPrescriptions.name;
+    birth.innerText = userAndPrescriptions.birth;
 
-    if (userAndPrescription.prescriptions == []) {
-      const render = document.createElement('h6');
-      render.className = 'f-w-400';
-      render.innerText = 'Nenhuma prescrição feita';
-      oldPrescriptions.appendChild(render);
-    } else {
-      const root = document.getElementById('old_prescriptions');
-
-      for (const prescription of userAndPrescription.prescriptions) {
-        const render = document.createElement('div');
-
-        const prescriptionElement = document.createElement('p');
-        prescriptionElement.className = 'm-b-10 f-w-600';
-        prescriptionElement.innerText = prescription.prescription;
-
-        const spanDateElement = document.createElement('span');
-        spanDateElement.className = 'text-muted f-w-400';
-        spanDateElement.innerText = prescription.prescription_date;
-
-        const h6Element = document.createElement('h6');
-        h6Element.className = 'f-w-400';
-        h6Element.innerText = 'Prescrição feita em ';
-        h6Element.appendChild(spanDateElement);
-
-        const endLineH6Element = document.createElement('h6');
-        endLineH6Element.className = 'm-b-20 m-t-40 p-b-5 b-b-default f-w-600';
-
-        render.appendChild(prescriptionElement);
-        render.appendChild(h6Element);
-        render.appendChild(endLineH6Element);
-
-        root.appendChild(render);
-      }
-    }
+    const render = Render.renderOldPrescriptions(userAndPrescriptions);
+    oldPrescriptions.appendChild(render);
   }
 );
 
