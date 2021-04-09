@@ -1,4 +1,5 @@
 import { Prescription } from '../database/models/Prescription';
+import { PhotoInfo } from './Photo';
 
 export interface usersAndPrescription {
   id: string;
@@ -30,6 +31,9 @@ export interface UserAndPrescription {
   dad: string;
   sex: string;
   birth: string;
+  religion: string;
+  schooling: string;
+  profession: string;
   prescription: Prescription;
   created_at?: Date;
   updated_at?: Date;
@@ -52,4 +56,9 @@ export interface Person {
 export interface PDFUserPrescription {
   person: Person;
   prescriptions: PDFPrescription[];
+}
+
+export interface PrescriptionAndPhotos {
+  prescription: Prescription;
+  files: PhotoInfo[];
 }
