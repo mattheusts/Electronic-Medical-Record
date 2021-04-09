@@ -38,14 +38,11 @@ export class Render {
       card.appendChild(cardBody);
 
       render.appendChild(card);
-
-      return render;
     }
+    return render;
   }
 
-  public static renderOldPrescriptions(
-    userAndPrescriptions: UserAndPrescriptions
-  ): HTMLElement {
+  public static renderOldPrescriptions(userAndPrescriptions: UserAndPrescriptions): HTMLElement {
     const root: HTMLElement = document.createElement('div');
 
     if (userAndPrescriptions.prescriptions == []) {
@@ -65,17 +62,20 @@ export class Render {
         const editButton = document.createElement('button');
         editButton.innerText = 'Editar';
         editButton.className = 'btn btn-primary btn-sm';
-        editButton.setAttribute('onclick', `edit('${prescription.id}')`);
+        editButton.setAttribute(
+          'onclick',
+          `editPrescription('${prescription.id}', '${userAndPrescriptions.id}')`
+        );
 
         const printButton = document.createElement('button');
         printButton.innerText = 'Imprimir';
         printButton.className = 'btn btn-success btn-sm';
-        printButton.setAttribute('onclick', `print('${prescription.id}')`);
+        printButton.setAttribute('onclick', `printPDF('${prescription.id}')`);
 
         const deleteButton = document.createElement('button');
         deleteButton.innerText = 'Deletar';
         deleteButton.className = 'btn btn-danger btn-sm';
-        deleteButton.setAttribute('onclick', `delete('${prescription.id}')`);
+        deleteButton.setAttribute('onclick', `deletePrescription('${prescription.id}')`);
 
         divButtons.appendChild(editButton);
         divButtons.appendChild(printButton);
