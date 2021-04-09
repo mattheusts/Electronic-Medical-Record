@@ -1,4 +1,6 @@
 import { v4 as uuid } from 'uuid';
+import * as path from 'path';
+import * as fs from 'fs';
 
 export interface PhotoInfo {
   id?: string;
@@ -11,6 +13,32 @@ export interface PhotoInfo {
   lastModifiedDate: string;
   created_at?: Date;
   updated_at?: Date;
+}
+
+export async function deleteFile(path: string): Promise<void> {
+  fs.rmSync(path);
+}
+
+export async function saveLocalFileList(
+  basePath: string,
+  photoList: PhotoInfo[]
+): Promise<void> {
+  const defaultPath = path.join(basePath, 'images');
+  try {
+    const exists = fs.existsSync(defaultPath);
+    if (!exists) {
+      fs.mkdirSync(defaultPath);
+    }
+    photoList.map((file) => {
+      const splitName = file.name.split('.');
+      fs.copyFileSync(
+        file.path,
+        path.join(defaultPath, `${file.id}.${splitName[splitName.length - 1]}`)
+      );
+    });
+  } catch (err) {
+    console.log(`Error :: saveLocalFileList :: ${err}`);
+  }
 }
 
 export class PhotoUpload {
