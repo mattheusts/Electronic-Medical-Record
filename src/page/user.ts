@@ -13,7 +13,7 @@ window.onload = function () {
 
   const btn2 = document.createElement('button');
   btn2.innerText = 'Nova prescrição';
-  btn2.className = 'btn btn-primary';
+  btn2.className = 'btn btn-success';
   btn2.setAttribute('onclick', `newPrescription('${id}')`);
 
   const btn3 = document.createElement('button');
@@ -28,7 +28,7 @@ window.onload = function () {
 
   divButtons.appendChild(btn1);
   divButtons.appendChild(btn2);
-  divButtons.appendChild(btn3);
+  // divButtons.appendChild(btn3);
   divButtons.appendChild(btn4);
 };
 
