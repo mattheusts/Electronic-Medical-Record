@@ -4,6 +4,7 @@ import { app } from 'electron';
 import * as path from 'path';
 import { Prescription } from './models/Prescription';
 import { User } from './models/User';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { usersAndPrescription } from '../util';
 import { PhotoInfo } from '../util/Photo';
 import { File } from './models/File';
@@ -64,7 +65,7 @@ export default class Database {
     return prescriptionRepository.save(newPrescription);
   }
 
-  public async intertFile(file: PhotoInfo): Promise<File> {
+  public async insertFile(file: PhotoInfo): Promise<File> {
     const fileRepository = this.connection.getRepository(File);
     const newFile: File = {
       ...file,
@@ -169,11 +170,31 @@ export default class Database {
     return usersAndPrescription;
   }
 
+  public async getPrescription(id: string): Promise<Prescription> {
+    const prescriptionRepository = this.connection.getRepository(Prescription);
+    return await prescriptionRepository.findOne({ id });
+  }
+
   public async deleteUserAndPrescription(id: string): Promise<void> {
     const userRepository = this.connection.getRepository(User);
     await userRepository.delete({ id: id });
 
     const prescriptionRepository = this.connection.getRepository(Prescription);
     await prescriptionRepository.delete({ user_id: id });
+  }
+
+  public async deletePrescription(id: string): Promise<void> {
+    const prescriptionRepository = this.connection.getRepository(Prescription);
+    await prescriptionRepository.delete({ id });
+  }
+
+  public async deleteFile(id: string): Promise<void> {
+    const fileRepository = this.connection.getRepository(File);
+    await fileRepository.delete({ id });
+  }
+
+  public async getAllFilesByPrescriptionId(id: string): Promise<File[]> {
+    const fileRepository = this.connection.getRepository(File);
+    return fileRepository.find({ prescription_id: id });
   }
 }
