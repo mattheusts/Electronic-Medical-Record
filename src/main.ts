@@ -4,29 +4,18 @@ import * as fs from 'fs';
 import 'reflect-metadata'; // Required by TypoORM.
 import Database from './database';
 import { Search } from './database/search';
-import { UserAndPrescription, UserAndPrescriptions } from './util';
-import { Render } from './page/render';
+import { PrescriptionAndPhotos, UserAndPrescription, UserAndPrescriptions } from './util';
 import { User } from './database/models/User';
-import { Prescription } from './database/models/Prescription';
 import createPDF from './services/PDFTemplate';
+import { deleteFile, saveLocalFileList } from './util/Photo';
 
 let DEFAULT_PATH = '';
 
-if (
-  !fs.existsSync(
-    path.join(app.getPath('userData'), 'electronic-medical-record')
-  )
-) {
+if (!fs.existsSync(path.join(app.getPath('userData'), 'electronic-medical-record'))) {
   fs.mkdirSync(path.join(app.getPath('userData'), 'electronic-medical-record'));
-  DEFAULT_PATH = path.join(
-    app.getPath('userData'),
-    'electronic-medical-record'
-  );
+  DEFAULT_PATH = path.join(app.getPath('userData'), 'electronic-medical-record');
 } else {
-  DEFAULT_PATH = path.join(
-    app.getPath('userData'),
-    'electronic-medical-record'
-  );
+  DEFAULT_PATH = path.join(app.getPath('userData'), 'electronic-medical-record');
 }
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -87,7 +76,7 @@ ipcMain.on('form-data', async (err, result: User) => {
 
 const search = new Search();
 
-ipcMain.on('init', async (err, res) => {
+ipcMain.on('init', async () => {
   const users = await database.getAllUsers();
   const userSearch = await search.searchAll(users);
   mainWindow.webContents.send('searchAll', userSearch);
@@ -136,7 +125,7 @@ ipcMain.on('editInit', async (err, res) => {
 });
 
 ipcMain.on('updateUser', async (err, res: User) => {
-  const newUser = await database.updateUser(res);
+  await database.updateUser(res);
   mainWindow.loadFile(path.join(__dirname, '../public/search.html'));
 });
 
@@ -160,12 +149,47 @@ ipcMain.on('sendPrescriptions', async (err, res) => {
   mainWindow.webContents.send('newPrescriptions', userAndPrescriptions);
 });
 
-ipcMain.on('savePrescription', async (err, res: Prescription) => {
-  await database.insertPrescription(res);
+ipcMain.on('savePrescription', async (err, res: PrescriptionAndPhotos) => {
+  const prescription = await database.insertPrescription(res.prescription);
+
+  const files = res.files.map((file) => {
+    return {
+      ...file,
+      prescription_id: prescription.id,
+    };
+  });
+
+  await saveLocalFileList(DEFAULT_PATH, files);
+
+  files.map(async (file) => {
+    const splitName = file.name.split('.');
+    await database.insertFile({
+      ...file,
+      path: path.join(
+        path.join(DEFAULT_PATH, 'images'),
+        `${file.id}.${splitName[splitName.length - 1]}`
+      ),
+    });
+  });
 
   mainWindow.loadFile(path.join(__dirname, '../public/user.html'), {
-    query: { id: res.user_id },
+    query: { id: res.prescription.user_id },
   });
+});
+
+ipcMain.on('editPrescription', async (err, res: any) => {
+  mainWindow.loadFile(path.join(__dirname, '../public/editPrescription.html'));
+
+  const user = await database.getUser(res.user_id);
+  const prescription = await database.getPrescription(res.prescription_id);
+
+  const userAndPrescription: UserAndPrescription = {
+    ...user,
+    prescription: prescription,
+  };
+
+  console.log(userAndPrescription);
+  mainWindow.webContents.send('LoadEditPrescription', userAndPrescription);
 });
 
 //  print pdf
@@ -221,4 +245,21 @@ ipcMain.on('printPDF', async (err, res: string) => {
 ipcMain.on('deleteUser', async (err, res: string) => {
   await database.deleteUserAndPrescription(res);
   mainWindow.loadFile(path.join(__dirname, '../public/search.html'));
+});
+
+// Delete Prescription
+
+ipcMain.on('deletePrescription', async (err, res: string) => {
+  const prescription = await database.getPrescription(res);
+  await database.deletePrescription(prescription.id);
+
+  const allFiles = await database.getAllFilesByPrescriptionId(res);
+  allFiles.map(async (file) => {
+    await database.deleteFile(file.id);
+    await deleteFile(file.path);
+  });
+
+  mainWindow.loadFile(path.join(__dirname, '../public/prescription.html'), {
+    query: { id: prescription.user_id },
+  });
 });
