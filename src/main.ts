@@ -4,7 +4,12 @@ import * as fs from 'fs';
 import 'reflect-metadata'; // Required by TypoORM.
 import Database from './database';
 import { Search } from './database/search';
-import { PrescriptionAndPhotos, UserAndPrescription, UserAndPrescriptions } from './util';
+import {
+  PrescriptionAndPhotos,
+  UserAndPrescription,
+  UserAndPrescriptionAndFiles,
+  UserAndPrescriptions,
+} from './util';
 import { User } from './database/models/User';
 import createPDF from './services/PDFTemplate';
 import { deleteFile, saveLocalFileList } from './util/Photo';
@@ -178,18 +183,39 @@ ipcMain.on('savePrescription', async (err, res: PrescriptionAndPhotos) => {
 });
 
 ipcMain.on('editPrescription', async (err, res: any) => {
-  mainWindow.loadFile(path.join(__dirname, '../public/editPrescription.html'));
+  mainWindow.loadFile(path.join(__dirname, '../public/editPrescription.html'), {
+    query: {
+      user_id: res.user_id,
+      prescription_id: res.prescription_id,
+    },
+  });
+});
 
+ipcMain.on('InitEditPrescription', async (err, res) => {
   const user = await database.getUser(res.user_id);
   const prescription = await database.getPrescription(res.prescription_id);
+  const files = await database.getAllFilesByPrescriptionId(prescription.id);
 
-  const userAndPrescription: UserAndPrescription = {
+  const userAndPrescription: UserAndPrescriptionAndFiles = {
     ...user,
     prescription: prescription,
+    files: files,
   };
 
-  console.log(userAndPrescription);
   mainWindow.webContents.send('LoadEditPrescription', userAndPrescription);
+});
+
+ipcMain.on('updatePrescription', async (error, res: UserAndPrescriptionAndFiles) => {
+  await database.updatePrescription(res.prescription);
+  await database.deleteAllFilesByPrescriptionId(res.prescription.id);
+  res.files.map(async (file) => {
+    file.prescription_id = res.prescription.id;
+    await database.updateFile(file);
+  });
+
+  mainWindow.loadFile(path.join(__dirname, '../public/user.html'), {
+    query: { id: res.prescription.user_id },
+  });
 });
 
 //  print pdf
@@ -243,7 +269,14 @@ ipcMain.on('printPDF', async (err, res: string) => {
 });
 
 ipcMain.on('deleteUser', async (err, res: string) => {
+  const fristPrescript = await database.getFristPrescriptionByUserId(res);
   await database.deleteUserAndPrescription(res);
+
+  const allFiles = await database.getAllFilesByPrescriptionId(fristPrescript.id);
+  allFiles.map(async (file) => {
+    await database.deleteFile(file.id);
+    await deleteFile(file.path);
+  });
   mainWindow.loadFile(path.join(__dirname, '../public/search.html'));
 });
 

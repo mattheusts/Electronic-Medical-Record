@@ -19,10 +19,7 @@ export async function deleteFile(path: string): Promise<void> {
   fs.rmSync(path);
 }
 
-export async function saveLocalFileList(
-  basePath: string,
-  photoList: PhotoInfo[]
-): Promise<void> {
+export async function saveLocalFileList(basePath: string, photoList: PhotoInfo[]): Promise<void> {
   const defaultPath = path.join(basePath, 'images');
   try {
     const exists = fs.existsSync(defaultPath);
@@ -53,7 +50,7 @@ export class PhotoUpload {
   public addFile(photoList: PhotoInfo[]): void {
     for (const file of photoList) {
       this.fileList.push({
-        id: uuid(),
+        id: file.id || uuid(),
         name: file.name,
         path: file.path,
         size: file.size,
