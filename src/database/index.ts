@@ -51,9 +51,7 @@ export default class Database {
     return userRepository.save(newUser);
   }
 
-  public async insertPrescription(
-    prescription: Prescription
-  ): Promise<Prescription> {
+  public async insertPrescription(prescription: Prescription): Promise<Prescription> {
     const prescriptionRepository = this.connection.getRepository(Prescription);
     const newPrescription: Prescription = {
       id: uuid(),
@@ -131,23 +129,17 @@ export default class Database {
     return await userRepository.save({ ...oldUser, ...newUser });
   }
 
-  public async searchOnePrescriptionByUserId(
-    id: string
-  ): Promise<Prescription> {
+  public async searchOnePrescriptionByUserId(id: string): Promise<Prescription> {
     const prescriptionRepository = this.connection.getRepository(Prescription);
     return prescriptionRepository.findOne({ user_id: id });
   }
 
-  public async searchAllPrescriptionByUserId(
-    id: string
-  ): Promise<Prescription[]> {
+  public async searchAllPrescriptionByUserId(id: string): Promise<Prescription[]> {
     const prescriptionRepository = this.connection.getRepository(Prescription);
     return prescriptionRepository.find({ user_id: id });
   }
 
-  public async searchAllAndPrescription(
-    limit = 10
-  ): Promise<usersAndPrescription[]> {
+  public async searchAllAndPrescription(limit = 10): Promise<usersAndPrescription[]> {
     const userRepository = this.connection.getRepository(User);
     const users = await userRepository.find({
       take: limit,
@@ -188,9 +180,27 @@ export default class Database {
     await prescriptionRepository.delete({ id });
   }
 
+  public async updatePrescription(prescription: Prescription): Promise<void> {
+    const prescriptionRepository = this.connection.getRepository(Prescription);
+    const oldPrescriptions = await prescriptionRepository.findOne({ id: prescription.id });
+    await prescriptionRepository.save({ ...oldPrescriptions, ...prescription });
+  }
+
+  //
   public async deleteFile(id: string): Promise<void> {
     const fileRepository = this.connection.getRepository(File);
     await fileRepository.delete({ id });
+  }
+
+  public async updateFile(file: File): Promise<void> {
+    const fileRepository = this.connection.getRepository(File);
+    const oldFile = fileRepository.findOne({ id: file.id });
+    await fileRepository.save({ ...oldFile, ...file });
+  }
+
+  public async deleteAllFilesByPrescriptionId(id: string): Promise<void> {
+    const fileRepository = this.connection.getRepository(File);
+    await fileRepository.delete({ prescription_id: id });
   }
 
   public async getAllFilesByPrescriptionId(id: string): Promise<File[]> {
