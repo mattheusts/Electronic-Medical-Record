@@ -39,6 +39,23 @@ export interface UserAndPrescription {
   updated_at?: Date;
 }
 
+export interface UserAndPrescriptionAndFiles {
+  id?: string;
+  name: string;
+  naturalness: string;
+  mother: string;
+  dad: string;
+  sex: string;
+  birth: string;
+  religion: string;
+  schooling: string;
+  profession: string;
+  prescription: Prescription;
+  files: PhotoInfo[];
+  created_at?: Date;
+  updated_at?: Date;
+}
+
 export interface PDFPrescription {
   date: string;
   prescription: string;
