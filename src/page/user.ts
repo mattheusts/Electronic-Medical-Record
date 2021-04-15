@@ -1,5 +1,6 @@
 import { ipcRenderer } from 'electron';
-import { UserAndPrescription } from '../util';
+import { UserAndPrescriptions } from '../util';
+import { Render } from './render';
 
 window.onload = function () {
   const id = window.location.search.split('=')[1];
@@ -16,11 +17,6 @@ window.onload = function () {
   btn2.className = 'btn btn-success';
   btn2.setAttribute('onclick', `newPrescription('${id}')`);
 
-  const btn3 = document.createElement('button');
-  btn3.innerText = 'Imprimir';
-  btn3.className = 'btn btn-success';
-  btn3.setAttribute('onclick', `printPDF('${id}')`);
-
   const btn4 = document.createElement('button');
   btn4.innerText = 'Deletar';
   btn4.className = 'btn btn-danger';
@@ -28,27 +24,26 @@ window.onload = function () {
 
   divButtons.appendChild(btn1);
   divButtons.appendChild(btn2);
-  // divButtons.appendChild(btn3);
   divButtons.appendChild(btn4);
 };
 
-ipcRenderer.on('userInfo', (event, res: UserAndPrescription) => {
+ipcRenderer.on('userInfo', (event, res: UserAndPrescriptions) => {
   const name = document.getElementById('name') as HTMLInputElement;
   const birth = document.getElementById('birth') as HTMLInputElement;
-  const prescription = document.getElementById(
-    'prescription'
-  ) as HTMLInputElement;
-  const prescriptionDate = document.getElementById(
-    'prescriptionDate'
-  ) as HTMLInputElement;
+  const prescription = document.getElementById('prescription') as HTMLInputElement;
+  const prescriptionDate = document.getElementById('prescriptionDate') as HTMLInputElement;
 
   name.innerText = res.name;
   birth.innerText = res.birth;
 
-  if (!res.prescription) {
+  if (res.prescriptions.length <= 0) {
     prescription.innerText = 'Não há prescrições';
   } else {
-    prescription.innerText = res.prescription.prescription;
-    prescriptionDate.innerText = res.prescription.prescription_date;
+    prescription.innerText = res.prescriptions[0].prescription;
+    prescriptionDate.innerText = res.prescriptions[0].prescription_date;
   }
+
+  const oldPrescriptions = document.getElementById('old_prescriptions') as HTMLElement;
+  const render = Render.renderOldPrescriptions(res);
+  oldPrescriptions.appendChild(render);
 });
