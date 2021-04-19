@@ -21,9 +21,6 @@ export function deletePrescription(id: string): void {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function
-export function editPrescription(
-  prescription_id: string,
-  user_id: string
-): void {
+export function editPrescription(prescription_id: string, user_id: string): void {
   ipcRenderer.send('editPrescription', { user_id, prescription_id });
 }
