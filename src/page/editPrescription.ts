@@ -166,82 +166,88 @@ ipcRenderer.on(
 );
 
 const savePrescriptions = document.getElementById('save_prescriptions');
-savePrescriptions.addEventListener('click', (event: Event) => {
-  event.preventDefault();
+document.addEventListener('click', (event: Event) => {
+  if (event.target.id === 'save_and_print' || event.target.id === 'save_prescriptions') {
+    event.preventDefault();
 
-  const res: PrescriptionAndPhotos = {
-    prescription: {
-      id: prescription_id,
+    const res: PrescriptionAndPhotos = {
+      prescription: {
+        id: prescription_id,
 
-      neurological_examination: neurological_examination.value,
-      main_complaint: main_complaint.value,
-      family_history: family_history.value,
-      history_current: history_current.value,
-      social_history: social_history.value,
-      previous_pathological_history: previous_pathological_history.value,
-      physiological_history: physiological_history.value,
-      pharmaceutical_history: pharmaceutical_history.value,
+        neurological_examination: neurological_examination.value,
+        main_complaint: main_complaint.value,
+        family_history: family_history.value,
+        history_current: history_current.value,
+        social_history: social_history.value,
+        previous_pathological_history: previous_pathological_history.value,
+        physiological_history: physiological_history.value,
+        pharmaceutical_history: pharmaceutical_history.value,
 
-      // Exame físico
-      cardiovascular_system: cardiovascular_system.value,
-      blood_pressure: blood_pressure.value,
-      heart_rate: heart_rate.value,
-      respiratory_system: respiratory_system.value,
-      oxygen_saturation: oxygen_saturation.value,
-      adb: adb.value,
-      mmii: mmii.value,
-      otoscopy: otoscopy.value,
-      ophthalmoscopy: ophthalmoscopy.value,
-      romberg: romberg.value,
+        // Exame físico
+        cardiovascular_system: cardiovascular_system.value,
+        blood_pressure: blood_pressure.value,
+        heart_rate: heart_rate.value,
+        respiratory_system: respiratory_system.value,
+        oxygen_saturation: oxygen_saturation.value,
+        adb: adb.value,
+        mmii: mmii.value,
+        otoscopy: otoscopy.value,
+        ophthalmoscopy: ophthalmoscopy.value,
+        romberg: romberg.value,
 
-      // Marcha
-      ceifante: ceifante.checked,
-      ataxica_talonante: ataxica_talonante.checked,
-      escarvante: escarvante.checked,
-      anserina: anserina.checked,
-      cerebelar: cerebelar.checked,
-      magnetica: magnetica.checked,
-      parkinsoniana: parkinsoniana.checked,
+        // Marcha
+        ceifante: ceifante.checked,
+        ataxica_talonante: ataxica_talonante.checked,
+        escarvante: escarvante.checked,
+        anserina: anserina.checked,
+        cerebelar: cerebelar.checked,
+        magnetica: magnetica.checked,
+        parkinsoniana: parkinsoniana.checked,
 
-      // Diagnóstico sindrômico
-      cognitivo: cognitivo.checked,
-      convulsive: convulsive.checked,
-      intracranial_hypertension: intracranial_hypertension.checked,
-      meningeal: meningeal.checked,
-      motora: motora.checked,
-      sensitiva: sensitiva.checked,
-      hemiparetica: hemiparetica.checked,
-      paraparetica: paraparetica.checked,
-      tetraparetica: tetraparetica.checked,
-      monoparetica: monoparetica.checked,
-      nmi: nmi.value,
+        // Diagnóstico sindrômico
+        cognitivo: cognitivo.checked,
+        convulsive: convulsive.checked,
+        intracranial_hypertension: intracranial_hypertension.checked,
+        meningeal: meningeal.checked,
+        motora: motora.checked,
+        sensitiva: sensitiva.checked,
+        hemiparetica: hemiparetica.checked,
+        paraparetica: paraparetica.checked,
+        tetraparetica: tetraparetica.checked,
+        monoparetica: monoparetica.checked,
+        nmi: nmi.value,
 
-      // Sindromes Relacionados a Função do Sistema Nervoso Autonomo
-      cardiovascular: cardiovascular.checked,
-      respiratory: respiratory.checked,
-      digestive: digestive.checked,
-      sudorese: sudorese.checked,
-      control_of_sphincters_and_bladder: control_of_sphincters_and_bladder.checked,
+        // Sindromes Relacionados a Função do Sistema Nervoso Autonomo
+        cardiovascular: cardiovascular.checked,
+        respiratory: respiratory.checked,
+        digestive: digestive.checked,
+        sudorese: sudorese.checked,
+        control_of_sphincters_and_bladder: control_of_sphincters_and_bladder.checked,
 
-      // Sindromes Sensitivas
-      hypoesthesias: hypoesthesias.checked,
-      paresthesia: paresthesia.checked,
-      hyperalgesia: hyperalgesia.checked,
+        // Sindromes Sensitivas
+        hypoesthesias: hypoesthesias.checked,
+        paresthesia: paresthesia.checked,
+        hyperalgesia: hyperalgesia.checked,
 
-      // Diagnóstico
-      prescription: prescription.value,
-      requested_exams: requested_exams.value,
-      notes: notes.value,
-      exam_results: exam_results.value,
-      prescription_date: prescription_date.value,
+        // Diagnóstico
+        prescription: prescription.value,
+        requested_exams: requested_exams.value,
+        notes: notes.value,
+        exam_results: exam_results.value,
+        prescription_date: prescription_date.value,
 
-      user_id: user_id,
-    },
+        user_id: user_id,
+      },
 
-    files: photosUpload.getAllFiles(),
-  };
+      files: photosUpload.getAllFiles(),
+    };
 
-  ipcRenderer.send('updatePrescription', res);
+    if (event.target.id === 'save_prescriptions') {
+      ipcRenderer.send('savePrescription', res);
+    } else if (event.target.id === 'save_and_print') {
+      ipcRenderer.send('savePrescriptionAndPrint', res);
+    }
+  }
 });
 
 // Gallery
