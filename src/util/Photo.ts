@@ -16,7 +16,7 @@ export interface PhotoInfo {
 }
 
 export async function deleteFile(path: string): Promise<void> {
-  fs.rmSync(path);
+  fs.unlinkSync(path);
 }
 
 export async function saveLocalFileList(basePath: string, photoList: PhotoInfo[]): Promise<void> {
