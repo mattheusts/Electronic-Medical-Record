@@ -16,6 +16,7 @@
     "outDir": "./dist",
     "rootDir": "./src",
     "baseUrl": ".",
+    "esModuleInterop": true,
     "paths": {
       "*": ["node_modules/*"]
     }
