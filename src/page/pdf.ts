@@ -1,12 +1,10 @@
 import { ipcRenderer } from 'electron';
-
 window.onload = () => {
   console.log('loaded');
 };
 
 ipcRenderer.on('showPDF', async (event, res: string) => {
   const container = document.getElementById('root') as HTMLInputElement;
-  console.log(res);
   setTimeout(() => {
     const embed = document.createElement('iframe');
     embed.setAttribute('src', res);
@@ -17,5 +15,5 @@ ipcRenderer.on('showPDF', async (event, res: string) => {
 
     const loader = document.getElementById('loader') as HTMLElement;
     loader.className = 'hidden_loader';
-  }, 1000);
+  }, 2000);
 });
