@@ -1,4 +1,5 @@
 import { app, BrowserWindow, ipcMain, screen } from 'electron';
+import { remove } from 'fs-extra';
 import * as path from 'path';
 import * as fs from 'fs';
 import 'reflect-metadata'; // Required by TypoORM.
@@ -11,8 +12,8 @@ import {
   UserAndPrescriptions,
 } from './util';
 import { User } from './database/models/User';
-import createPDF from './services/PDFTemplate';
 import { deleteFile, saveLocalFileList } from './util/Photo';
+import { createPDF } from './services/PDFTemplate';
 
 let DEFAULT_PATH = '';
 
@@ -45,7 +46,7 @@ function createWindow() {
   mainWindow.loadFile(path.join(__dirname, '../public/search.html'));
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+  // mainWindow.webContents.openDevTools();
 }
 
 // This method will be called when Electron has finished
@@ -105,10 +106,10 @@ ipcMain.on('initUserInfo', async (err, res) => {
 
 ipcMain.on('userInfoID', async (err, res) => {
   const user = await database.getUser(res);
-  const prescription = await database.getFristPrescriptionByUserId(user.id);
-  const userAndPrescriptions: UserAndPrescription = {
+  const prescriptions = await database.getAllPrescriptionByUserId(user.id);
+  const userAndPrescriptions: UserAndPrescriptions = {
     ...user,
-    prescription: prescription,
+    prescriptions: prescriptions,
   };
 
   mainWindow.webContents.send('userInfo', userAndPrescriptions);
@@ -142,31 +143,32 @@ ipcMain.on('newPrescriptionInit', async (err, res) => {
   });
 });
 
-ipcMain.on('sendPrescriptions', async (err, res) => {
-  const user = await database.getUser(res);
-  const prescriptions = await database.getAllPrescriptionByUserId(user.id);
+// ipcMain.on('sendPrescriptions', async (err, res) => {
+//   const user = await database.getUser(res);
+//   const prescriptions = await database.getAllPrescriptionByUserId(user.id);
 
-  const userAndPrescriptions: UserAndPrescriptions = {
-    ...user,
-    prescriptions: prescriptions,
-  };
+//   const userAndPrescriptions: UserAndPrescriptions = {
+//     ...user,
+//     prescriptions: prescriptions,
+//   };
 
-  mainWindow.webContents.send('newPrescriptions', userAndPrescriptions);
-});
+//   mainWindow.webContents.send('newPrescriptions', userAndPrescriptions);
+// });
 
 ipcMain.on('savePrescription', async (err, res: PrescriptionAndPhotos) => {
   const prescription = await database.insertPrescription(res.prescription);
+  await database.deleteAllFilesByPrescriptionId(prescription.id);
 
-  const files = res.files.map((file) => {
+  const newFiles = res.files.map((file) => {
     return {
       ...file,
       prescription_id: prescription.id,
     };
   });
 
-  await saveLocalFileList(DEFAULT_PATH, files);
+  await saveLocalFileList(DEFAULT_PATH, newFiles);
 
-  files.map(async (file) => {
+  newFiles.map(async (file) => {
     const splitName = file.name.split('.');
     await database.insertFile({
       ...file,
@@ -219,49 +221,71 @@ ipcMain.on('updatePrescription', async (error, res: UserAndPrescriptionAndFiles)
 });
 
 //  print pdf
-
 ipcMain.on('printPDF', async (err, res: string) => {
   mainWindow.loadFile(path.join(__dirname, '../public/pdf.html'));
 
-  const user = await database.getUser(res);
-  const prescriptions = await database.getAllPrescriptionByUserId(user.id);
+  const prescription = await database.getPrescription(res);
+  const user = await database.getUser(prescription.user_id);
+  const files = await database.getAllFilesByPrescriptionId(prescription.id);
 
-  const items = [];
-  let count = 0;
-  for (const p of prescriptions) {
-    items.push({
-      date: p.prescription_date,
-      prescription: p.prescription,
-    });
-    count++;
-  }
-
-  for (; count <= 15; count++) {
-    items.push({
-      date: '',
-      prescriptions: '',
-    });
-  }
-
-  const data = {
-    person: {
-      name: user.name,
-      birth: user.birth,
-      sex: user.sex,
-      natureless: user.naturalness,
-      mother: user.mother,
-      dad: user.dad,
-    },
-
-    items: items,
+  const data: UserAndPrescriptionAndFiles = {
+    ...user,
+    prescription,
+    files,
   };
 
-  const defaultSavePDF = path.join(
-    DEFAULT_PATH,
-    data.person.name.split(' ').join('-').concat('.pdf')
-  );
+  const defaultSavePDF = path.join(DEFAULT_PATH, data.name.split(' ').join('-').concat('.pdf'));
 
-  createPDF(data, defaultSavePDF);
+  await createPDF(data, defaultSavePDF);
+
+  setTimeout(() => {
+    mainWindow.webContents.send('showPDF', defaultSavePDF);
+  }, 500);
+});
+
+// Save and print
+ipcMain.on('savePrescriptionAndPrint', async (err, res: PrescriptionAndPhotos) => {
+  const prescription = await database.insertPrescription(res.prescription);
+  await database.deleteAllFilesByPrescriptionId(prescription.id);
+
+  const saveFiles = res.files.map((file) => {
+    return {
+      ...file,
+      prescription_id: prescription.id,
+    };
+  });
+
+  await saveLocalFileList(DEFAULT_PATH, saveFiles);
+
+  saveFiles.map(async (file) => {
+    const splitName = file.name.split('.');
+    await database.insertFile({
+      ...file,
+      path: path.join(
+        path.join(DEFAULT_PATH, 'images'),
+        `${file.id}.${splitName[splitName.length - 1]}`
+      ),
+    });
+  });
+
+  mainWindow.loadFile(path.join(__dirname, '../public/pdf.html'));
+
+  const user = await database.getUser(prescription.user_id);
+  const files = await database.getAllFilesByPrescriptionId(prescription.id);
+
+  const data: UserAndPrescriptionAndFiles = {
+    ...user,
+    prescription,
+    files: res.files,
+  };
+
+  const defaultSavePDF = path.join(DEFAULT_PATH, user.name.split(' ').join('-').concat('.pdf'));
+
+  // if (fs.existsSync(defaultSavePDF)) {
+  //   remove(defaultSavePDF);
+  // }
+
+  await createPDF(data, defaultSavePDF);
 
   setTimeout(() => {
     mainWindow.webContents.send('showPDF', defaultSavePDF);
@@ -269,10 +293,10 @@ ipcMain.on('printPDF', async (err, res: string) => {
 });
 
 ipcMain.on('deleteUser', async (err, res: string) => {
-  const fristPrescript = await database.getFristPrescriptionByUserId(res);
+  const fristPrescription = await database.getFristPrescriptionByUserId(res);
   await database.deleteUserAndPrescription(res);
 
-  const allFiles = await database.getAllFilesByPrescriptionId(fristPrescript.id);
+  const allFiles = await database.getAllFilesByPrescriptionId(fristPrescription.id);
   allFiles.map(async (file) => {
     await database.deleteFile(file.id);
     await deleteFile(file.path);
@@ -292,7 +316,7 @@ ipcMain.on('deletePrescription', async (err, res: string) => {
     await deleteFile(file.path);
   });
 
-  mainWindow.loadFile(path.join(__dirname, '../public/prescription.html'), {
+  mainWindow.loadFile(path.join(__dirname, '../public/user.html'), {
     query: { id: prescription.user_id },
   });
 });
