@@ -5,12 +5,7 @@ import * as fs from 'fs';
 import 'reflect-metadata'; // Required by TypoORM.
 import Database from './database';
 import { Search } from './database/search';
-import {
-  PrescriptionAndPhotos,
-  UserAndPrescription,
-  UserAndPrescriptionAndFiles,
-  UserAndPrescriptions,
-} from './util';
+import { PrescriptionAndPhotos, UserAndPrescriptionAndFiles, UserAndPrescriptions } from './util';
 import { User } from './database/models/User';
 import { deleteFile, saveLocalFileList } from './util/Photo';
 import { createPDF } from './services/PDFTemplate';
@@ -46,7 +41,7 @@ function createWindow() {
   mainWindow.loadFile(path.join(__dirname, '../public/search.html'));
 
   // Open the DevTools.
-  // mainWindow.webContents.openDevTools();
+  mainWindow.webContents.openDevTools();
 }
 
 // This method will be called when Electron has finished
