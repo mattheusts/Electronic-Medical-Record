@@ -70,7 +70,9 @@ export class Render {
         const printButton = document.createElement('button');
         printButton.innerText = 'Imprimir';
         printButton.className = 'btn btn-success btn-sm';
-        printButton.setAttribute('onclick', `printPDF('${prescription.id}')`);
+        printButton.setAttribute('data-bs-toggle', 'modal');
+        printButton.setAttribute('data-bs-target', '#modal');
+        printButton.setAttribute('onclick', `setId('${prescription.id}')`);
 
         const deleteButton = document.createElement('button');
         deleteButton.innerText = 'Deletar';

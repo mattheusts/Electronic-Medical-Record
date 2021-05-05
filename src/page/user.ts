@@ -47,3 +47,14 @@ ipcRenderer.on('userInfo', (event, res: UserAndPrescriptions) => {
   const render = Render.renderOldPrescriptions(res);
   oldPrescriptions.appendChild(render);
 });
+
+export function setId(id: string): void {
+  const printPrescription = document.getElementById('print_prescription');
+  printPrescription.setAttribute('onclick', `printPrescription(${id})`);
+
+  const printRequestedExams = document.getElementById('print_requested_exams');
+  printRequestedExams.setAttribute('onclick', `printRequestedExams(${id})`);
+
+  const printMedicalRecord = document.getElementById('print_medical_record');
+  printMedicalRecord.setAttribute('onclick', `printMedicalRecord(${id})`);
+}
