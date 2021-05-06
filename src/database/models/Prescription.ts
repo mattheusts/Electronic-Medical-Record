@@ -4,10 +4,14 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToOne,
+  OneToMany,
 } from 'typeorm';
 import { v4 as uuid } from 'uuid';
+import { User } from './User';
+import { File } from './File';
 
-@Entity()
+@Entity('prescription')
 export class Prescription {
   @PrimaryGeneratedColumn('uuid')
   readonly id?: string;
@@ -173,6 +177,12 @@ export class Prescription {
 
   @Column()
   prescription_date: string;
+
+  @ManyToOne(() => User, (user) => user.prescriptions)
+  user: User;
+
+  @OneToMany(() => File, (file) => file.prescription)
+  files?: File[];
 
   @Column()
   user_id: string;
