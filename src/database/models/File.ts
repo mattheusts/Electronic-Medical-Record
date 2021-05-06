@@ -4,8 +4,10 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToOne,
 } from 'typeorm';
 import { v4 as uuid } from 'uuid';
+import { Prescription } from './Prescription';
 
 @Entity()
 export class File {
@@ -32,6 +34,9 @@ export class File {
 
   @Column()
   prescription_id?: string;
+
+  @ManyToOne(() => Prescription, (prescription) => prescription.files)
+  prescription: Prescription;
 
   @CreateDateColumn()
   created_at?: Date;
