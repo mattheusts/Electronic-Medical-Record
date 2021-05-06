@@ -2,12 +2,15 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
+  OneToMany,
   CreateDateColumn,
   UpdateDateColumn,
+  JoinColumn,
 } from 'typeorm';
 import { v4 as uuid } from 'uuid';
+import { Prescription } from './Prescription';
 
-@Entity()
+@Entity('users')
 export class User {
   @PrimaryGeneratedColumn('uuid')
   readonly id?: string;
@@ -34,10 +37,13 @@ export class User {
   religion: string;
 
   @Column()
-  schooling: string
+  schooling: string;
 
   @Column()
-  profession: string
+  profession: string;
+
+  @OneToMany(() => Prescription, (prescription) => prescription.user)
+  prescriptions?: Prescription[];
 
   @CreateDateColumn()
   created_at?: Date;
