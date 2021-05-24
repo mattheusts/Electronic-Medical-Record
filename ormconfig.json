@@ -1,8 +1,0 @@
-{
-  "type": "sqlite",
-  "synchronize": true,
-  "logging": true,
-  "logger": "simple-console",
-  "database": "Electronic-Medical-Record.sqlite",
-  "entities": ["src/database/models/*.ts"]
-}
