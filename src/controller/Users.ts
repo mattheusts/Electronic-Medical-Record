@@ -1,5 +1,6 @@
 import { BrowserWindow, IpcMainEvent } from 'electron';
 import * as path from 'path';
+import { deleteFile } from '../util/Photo';
 import { IUserCreate, IUserUpdate, UsersService } from '../services/UsersService';
 
 class UserController {
@@ -18,6 +19,18 @@ class UserController {
 
   async update(event: IpcMainEvent, user: IUserUpdate): Promise<void> {
     await this.userService.update(user);
+
+    this.mainWindow.loadFile(path.join(__dirname, '../../public/search.html'));
+  }
+
+  async delete(event: IpcMainEvent, id: string): Promise<void> {
+    const all = await this.userService.findOneAllCascade(id);
+    await this.userService.deleteAllCascade(id);
+
+    const allFiles = [];
+    all.prescriptions.forEach((prescription) => allFiles.push(...prescription.files));
+
+    allFiles.forEach(async (file) => await deleteFile(file.path));
 
     this.mainWindow.loadFile(path.join(__dirname, '../../public/search.html'));
   }
