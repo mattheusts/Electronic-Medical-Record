@@ -57,7 +57,13 @@ class UsersService {
   async findOneAllCascade(id: string): Promise<User> {
     return await this.usersRepository.findOne({
       where: { id },
-      relations: ['prescriptions'],
+      relations: ['prescriptions', 'prescriptions.files'],
+    });
+  }
+
+  async deleteAllCascade(user_id: string): Promise<void> {
+    await this.usersRepository.delete({
+      id: user_id,
     });
   }
 
