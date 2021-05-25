@@ -35,7 +35,7 @@ export class File {
   @Column()
   prescription_id?: string;
 
-  @ManyToOne(() => Prescription, (prescription) => prescription.files)
+  @ManyToOne(() => Prescription, (prescription) => prescription.files, { onDelete: 'CASCADE' })
   prescription: Prescription;
 
   @CreateDateColumn()
