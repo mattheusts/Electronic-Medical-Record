@@ -91,6 +91,10 @@ class PrescriptionService {
     const oldPrescription = this.prescriptionRepository.findOne({ id: prescription.id });
     return await this.prescriptionRepository.save({ ...oldPrescription, ...prescription });
   }
+
+  async delete(id: string): Promise<void> {
+    await this.prescriptionRepository.delete({ id });
+  }
 }
 
 export { PrescriptionService, IPrescriptionCreate };
