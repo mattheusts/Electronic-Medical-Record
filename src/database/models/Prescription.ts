@@ -178,7 +178,7 @@ export class Prescription {
   @Column()
   prescription_date: string;
 
-  @ManyToOne(() => User, (user) => user.prescriptions)
+  @ManyToOne(() => User, (user) => user.prescriptions, { onDelete: 'CASCADE' })
   user: User;
 
   @OneToMany(() => File, (file) => file.prescription)
