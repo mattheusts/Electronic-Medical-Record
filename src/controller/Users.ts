@@ -48,8 +48,6 @@ class UserController {
   }
 
   async editUserInfo(event: IpcMainEvent, user_id: string): Promise<void> {
-    console.log('dit');
-
     const user = await this.userService.findOne(user_id);
     this.mainWindow.webContents.send('editUserInfo', user);
   }
