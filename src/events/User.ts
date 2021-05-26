@@ -23,11 +23,14 @@ ipcMain.on('editInit', async (err, id) => {
   await userController.editUserInfo(err, id);
 });
 
-// Edit User
 ipcMain.on('editUser', async (err, id) => {
   await userController.editUser(err, id);
 });
 
 ipcMain.on('updateUser', async (err, user: IUserUpdate) => {
   await userController.update(err, user);
+});
+
+ipcMain.on('deleteUser', async (err, res: string) => {
+  await userController.delete(err, res);
 });
