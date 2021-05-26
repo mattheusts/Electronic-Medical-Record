@@ -5,7 +5,6 @@ import {
   OneToMany,
   CreateDateColumn,
   UpdateDateColumn,
-  JoinColumn,
 } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import { Prescription } from './Prescription';
