@@ -5,13 +5,13 @@ import { PrescriptionsController } from '../controller/Prescriptions';
 const prescriptionController = new PrescriptionsController(global.mainWindow);
 
 // Prescription
-ipcMain.on('newPrescriptionInit', async (err, id) => {
-  prescriptionController.newPrescriptionInit(err, id);
+ipcMain.on('newPrescriptionInit', async (err, res) => {
+  prescriptionController.newPrescriptionInit(err, res);
 });
 
 // Save prescription
 ipcMain.on('savePrescription', async (err, res: PrescriptionAndPhotos) => {
-  prescriptionController.create(err, res);
+  await prescriptionController.create(err, res);
 });
 
 // Init edit prescription
@@ -21,5 +21,17 @@ ipcMain.on('editPrescription', async (err, res) => {
 
 // Edit prescription load
 ipcMain.on('InitEditPrescription', async (err, res) => {
-  prescriptionController.InitEditPrescription(err, res);
+  await prescriptionController.InitEditPrescription(err, res);
+});
+
+ipcMain.on('load-user-info', async (err, res) => {
+  await prescriptionController.userInfo(err, res);
+});
+
+ipcMain.on('updatePrescription', async (err, res: PrescriptionAndPhotos) => {
+  await prescriptionController.update(err, res);
+});
+
+ipcMain.on('deletePrescription', async (err, res: string) => {
+  await prescriptionController.delete(err, res);
 });
