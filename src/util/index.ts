@@ -1,5 +1,9 @@
+import { app } from 'electron';
+import * as fs from 'fs';
+import * as path from 'path';
+import { IPrescriptionCreate } from '../services/PrescriptionsService';
 import { Prescription } from '../database/models/Prescription';
-import { PhotoInfo } from './Photo';
+import { IFileCreate } from '../services/FilesService';
 
 export interface usersAndPrescription {
   id: string;
@@ -50,8 +54,8 @@ export interface UserAndPrescriptionAndFiles {
   religion: string;
   schooling: string;
   profession: string;
-  prescription: Prescription;
-  files: PhotoInfo[];
+  prescription: IPrescriptionCreate;
+  files: IFileCreate[];
   created_at?: Date;
   updated_at?: Date;
 }
@@ -76,6 +80,26 @@ export interface PDFUserPrescription {
 }
 
 export interface PrescriptionAndPhotos {
-  prescription: Prescription;
-  files: PhotoInfo[];
+  prescription: IPrescriptionCreate;
+  files: IFileCreate[];
+}
+
+export function setDefaultPath(): void {
+  const globalPath = path.join(app.getPath('userData'), 'electronic-medical-record');
+
+  if (!fs.existsSync(globalPath)) {
+    fs.mkdirSync(globalPath);
+    global.DEFAULT_SAVE_PATH = globalPath;
+  } else {
+    global.DEFAULT_SAVE_PATH = globalPath;
+  }
+
+  const globalSaveImages = path.join(globalPath, 'images');
+
+  if (!fs.existsSync(globalSaveImages)) {
+    fs.mkdirSync(globalSaveImages);
+    global.DEFAULT_SAVE_IMAGES = globalSaveImages;
+  } else {
+    global.DEFAULT_SAVE_IMAGES = globalSaveImages;
+  }
 }

@@ -7,6 +7,7 @@ declare global {
       database: Database;
       mainWindow: BrowserWindow;
       DEFAULT_SAVE_PATH: string;
+      DEFAULT_SAVE_IMAGES: string;
     }
   }
 }
