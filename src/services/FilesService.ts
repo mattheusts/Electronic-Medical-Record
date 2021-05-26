@@ -37,6 +37,10 @@ class FilesService {
   async delete(id: string): Promise<void> {
     await this.filesRepository.delete({ id });
   }
+
+  async deleteAllFilesByPrescription(prescription_id: string): Promise<void> {
+    await this.filesRepository.delete({ prescription_id: prescription_id });
+  }
 }
 
 export { FilesService, IFileCreate };
