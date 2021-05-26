@@ -1,6 +1,8 @@
 import { v4 as uuid } from 'uuid';
 import * as path from 'path';
 import * as fs from 'fs';
+import { Prescription } from '../database/models/Prescription';
+import { IFileCreate } from '../services/FilesService';
 
 export interface PhotoInfo {
   id?: string;
@@ -19,23 +21,64 @@ export async function deleteFile(path: string): Promise<void> {
   fs.unlinkSync(path);
 }
 
-export async function saveLocalFileList(basePath: string, photoList: PhotoInfo[]): Promise<void> {
+export async function preparingFiles(
+  basePath: string,
+  fileList: IFileCreate[],
+  prescription: Prescription
+): Promise<IFileCreate[]> {
   const defaultPath = path.join(basePath, 'images');
+
+  // Create defaultPath case not is exists
   try {
-    const exists = fs.existsSync(defaultPath);
-    if (!exists) {
+    if (!fs.existsSync(defaultPath)) {
       fs.mkdirSync(defaultPath);
     }
-    photoList.map((file) => {
-      const splitName = file.name.split('.');
-      fs.copyFileSync(
-        file.path,
-        path.join(defaultPath, `${file.id}.${splitName[splitName.length - 1]}`)
-      );
-    });
   } catch (err) {
     console.log(`Error :: saveLocalFileList :: ${err}`);
   }
+
+  fileList.forEach((file) => {
+    const splitName = file.name.split('.');
+    const newPath = path.join(defaultPath, `${file.id}.${splitName[splitName.length - 1]}`);
+
+    if (newPath != file.path) fs.copyFileSync(file.path, newPath);
+
+    file.prescription_id = prescription.id;
+    file.prescription = prescription;
+    file.path = newPath;
+  });
+
+  return fileList;
+}
+
+export async function fileUpdate(
+  oldFiles: IFileCreate[],
+  newFiles: IFileCreate[]
+): Promise<IFileCreate[]> {
+  const files = [];
+
+  oldFiles.forEach(async (oFile) => {
+    const findOldFile = newFiles.find((nFile) => nFile.id === oFile.id);
+    if (!findOldFile) {
+      deleteFile(oFile.path);
+    }
+  });
+
+  newFiles.forEach(async (file) => {
+    if (path.dirname(file.path) !== global.DEFAULT_SAVE_IMAGES) {
+      const splitName = file.name.split('.');
+      const newPath = path.join(
+        global.DEFAULT_SAVE_IMAGES,
+        `${file.id}.${splitName[splitName.length - 1]}`
+      );
+      fs.copyFileSync(file.path, newPath);
+      file.path = newPath;
+    }
+  });
+
+  files.push(...newFiles);
+
+  return files;
 }
 
 export class PhotoUpload {
