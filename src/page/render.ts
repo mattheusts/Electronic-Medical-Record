@@ -1,8 +1,8 @@
-import { UserAndPrescriptions } from '../util';
-import { UserSearch } from '../database/search';
+import { User } from '../database/models/User';
+import { IUserCreate } from '../services/UsersService';
 
 export class Render {
-  public static renderSeachAll(userSearch: UserSearch[]): HTMLElement {
+  public static renderSeachAll(userSearch: User[]): HTMLElement {
     if (userSearch.length == 0) {
       const render = document.createElement('div') as HTMLElement;
       const notFound = document.createElement('h6') as HTMLElement;
@@ -42,16 +42,16 @@ export class Render {
     return render;
   }
 
-  public static renderOldPrescriptions(userAndPrescriptions: UserAndPrescriptions): HTMLElement {
+  public static renderOldPrescriptions(user: IUserCreate): HTMLElement {
     const root: HTMLElement = document.createElement('div');
 
-    if (userAndPrescriptions.prescriptions == []) {
+    if (user.prescriptions == []) {
       const render = document.createElement('h6');
       render.className = 'f-w-400';
       render.innerText = 'Nenhuma prescrição feita';
       return render;
     } else {
-      for (const prescription of userAndPrescriptions.prescriptions) {
+      for (const prescription of user.prescriptions) {
         root.className = 'row d-inline';
         const render = document.createElement('div');
         render.className = 'row d-inline';
@@ -62,10 +62,7 @@ export class Render {
         const editButton = document.createElement('button');
         editButton.innerText = 'Editar';
         editButton.className = 'btn btn-primary btn-sm';
-        editButton.setAttribute(
-          'onclick',
-          `editPrescription('${prescription.id}', '${userAndPrescriptions.id}')`
-        );
+        editButton.setAttribute('onclick', `editPrescription('${prescription.id}', '${user.id}')`);
 
         const printButton = document.createElement('button');
         printButton.innerText = 'Imprimir';
