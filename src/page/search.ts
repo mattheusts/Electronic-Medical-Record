@@ -1,11 +1,11 @@
 import { ipcRenderer } from 'electron';
-import { UserSearch } from '../database/search';
+import { User } from '../database/models/User';
 import { Render } from './render';
 
 window.onload = function () {
   ipcRenderer.send('init');
 
-  ipcRenderer.on('searchAll', (event, users: UserSearch[]) => {
+  ipcRenderer.on('searchAll', (event, users: User[]) => {
     let render: HTMLElement = null;
     if (users.length > 0) {
       render = Render.renderSeachAll(users);
