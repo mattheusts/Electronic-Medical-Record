@@ -55,6 +55,7 @@ export class Render {
         root.className = 'row d-inline';
         const render = document.createElement('div');
         render.className = 'row d-inline';
+        render.setAttribute('style', '--bs-gutter-x: 0');
 
         const divButtons = document.createElement('div');
         divButtons.className = 'aling-right-buttons';
@@ -90,6 +91,7 @@ export class Render {
 
         const h6Element = document.createElement('h6');
         h6Element.className = 'f-w-400';
+        h6Element.style.marginTop = '20px';
         h6Element.innerText = 'Prescrição feita em ';
         h6Element.appendChild(spanDateElement);
 
