@@ -1,5 +1,5 @@
 import { ipcRenderer } from 'electron';
-import { UserAndPrescriptions } from '../util';
+import { IUserCreate } from '../services/UsersService';
 import { Render } from './render';
 
 window.onload = function () {
@@ -27,7 +27,7 @@ window.onload = function () {
   divButtons.appendChild(btn4);
 };
 
-ipcRenderer.on('userInfo', (event, res: UserAndPrescriptions) => {
+ipcRenderer.on('userInfo', (event, res: IUserCreate) => {
   const name = document.getElementById('name') as HTMLInputElement;
   const birth = document.getElementById('birth') as HTMLInputElement;
   const prescription = document.getElementById('prescription') as HTMLInputElement;
@@ -39,7 +39,15 @@ ipcRenderer.on('userInfo', (event, res: UserAndPrescriptions) => {
   if (res.prescriptions.length <= 0) {
     prescription.innerText = 'Não há prescrições';
   } else {
-    prescription.innerText = res.prescriptions[0].prescription;
+    if (res.prescriptions[0].prescription.length >= 150) {
+      res.prescriptions[0].prescription = res.prescriptions[0].prescription.slice(0, 150);
+      res.prescriptions[0].prescription += ' ...';
+      prescription.innerText = res.prescriptions[0].prescription;
+    }
+
+    if (res.prescriptions[0].prescription.length < 150)
+      prescription.innerText = res.prescriptions[0].prescription;
+
     prescriptionDate.innerText = res.prescriptions[0].prescription_date;
   }
 
@@ -50,11 +58,11 @@ ipcRenderer.on('userInfo', (event, res: UserAndPrescriptions) => {
 
 export function setId(id: string): void {
   const printPrescription = document.getElementById('print_prescription');
-  printPrescription.setAttribute('onclick', `printPrescription(${id})`);
+  printPrescription.setAttribute('onclick', `printPrescription('${id}')`);
 
   const printRequestedExams = document.getElementById('print_requested_exams');
-  printRequestedExams.setAttribute('onclick', `printRequestedExams(${id})`);
+  printRequestedExams.setAttribute('onclick', `printRequestedExams('${id}')`);
 
   const printMedicalRecord = document.getElementById('print_medical_record');
-  printMedicalRecord.setAttribute('onclick', `printMedicalRecord(${id})`);
+  printMedicalRecord.setAttribute('onclick', `printMedicalRecord('${id}')`);
 }

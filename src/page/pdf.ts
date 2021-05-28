@@ -1,7 +1,4 @@
 import { ipcRenderer } from 'electron';
-window.onload = () => {
-  console.log('loaded');
-};
 
 ipcRenderer.on('showPDF', async (event, res: string) => {
   const container = document.getElementById('root') as HTMLInputElement;
