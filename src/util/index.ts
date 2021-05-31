@@ -109,7 +109,7 @@ export function setDefaultPath(): void {
 // convert image
 export function imageToBase64(path: string): string {
   const img = fs.readFileSync(path);
-  return new Buffer(img).toString('base64');
+  return img.toString('base64');
 }
 
 // jsPDF type with plugin jspdf-autotable
