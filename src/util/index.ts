@@ -1,4 +1,6 @@
 import { app } from 'electron';
+import jsPDF from 'jspdf';
+import { Table, UserOptions } from 'jspdf-autotable';
 import * as fs from 'fs';
 import * as path from 'path';
 import { IPrescriptionCreate } from '../services/PrescriptionsService';
@@ -108,4 +110,10 @@ export function setDefaultPath(): void {
 export function imageToBase64(path: string): string {
   const img = fs.readFileSync(path);
   return new Buffer(img).toString('base64');
+}
+
+// jsPDF type with plugin jspdf-autotable
+export interface jsPDFWithPlugin extends jsPDF {
+  autoTable: (options: UserOptions) => jsPDF;
+  lastAutoTable: Table;
 }

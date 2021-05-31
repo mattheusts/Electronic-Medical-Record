@@ -1,13 +1,12 @@
 import { BrowserWindow, IpcMainEvent } from 'electron';
 import { layoutMultilineText, PDFDocument, StandardFonts, TextAlignment } from 'pdf-lib';
 import jsPDF from 'jspdf';
-import 'jspdf-autotable';
 import * as path from 'path';
 import * as fs from 'fs';
 
 import { UsersService } from '../services/UsersService';
 import { PrescriptionService } from '../services/PrescriptionsService';
-import { imageToBase64 } from '../util';
+import { imageToBase64, jsPDFWithPlugin } from '../util';
 
 class PDFController {
   private prescriptionsService: PrescriptionService;
@@ -80,7 +79,7 @@ class PDFController {
   async printRequestedExams(err: IpcMainEvent, id: string): Promise<void> {
     const prescription = await this.prescriptionsService.findOne(id);
 
-    const doc = new jsPDF();
+    const doc = new jsPDF() as jsPDFWithPlugin;
 
     let finalY = doc.lastAutoTable.finalY || 10;
 
