@@ -7,6 +7,7 @@ import * as fs from 'fs';
 import { UsersService } from '../services/UsersService';
 import { PrescriptionService } from '../services/PrescriptionsService';
 import { imageToBase64, jsPDFWithPlugin } from '../util';
+import { printAllPrescription } from '../lib/PDFCreator';
 
 class PDFController {
   private prescriptionsService: PrescriptionService;
@@ -104,6 +105,23 @@ class PDFController {
     const defaultPathSavePDF = path.join(global.DEFAULT_SAVE_PATH, prescription.id.concat('.pdf'));
 
     doc.save(defaultPathSavePDF);
+
+    this.mainWindow.loadFile(path.join(__dirname, '../../public/pdf.html'));
+
+    setTimeout(() => {
+      this.mainWindow.webContents.send('showPDF', defaultPathSavePDF);
+    }, 500);
+  }
+
+  async printMedicalRecord(err: IpcMainEvent, id: string): Promise<void> {
+    const data = await this.prescriptionsService.findOneAllCascade(id);
+
+    const defaultPathSavePDF = path.join(global.DEFAULT_SAVE_PATH, data.id.concat('.pdf'));
+
+    printAllPrescription(
+      { ...data.user, prescription: data, files: data.files },
+      defaultPathSavePDF
+    );
 
     this.mainWindow.loadFile(path.join(__dirname, '../../public/pdf.html'));
 

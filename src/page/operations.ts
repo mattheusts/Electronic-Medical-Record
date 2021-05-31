@@ -32,3 +32,7 @@ export function printPrescription(id: string): void {
 export function printRequestedExams(id: string): void {
   ipcRenderer.send('printRequestedExams', id);
 }
+
+export function printMedicalRecord(id: string): void {
+  ipcRenderer.send('printMedicalRecord', id);
+}

@@ -10,3 +10,7 @@ ipcMain.on('printPrescription', async (err, res) => {
 ipcMain.on('printRequestedExams', async (err, res) => {
   await pdfController.printRequestedExams(err, res);
 });
+
+ipcMain.on('printMedicalRecord', async (err, res) => {
+  await pdfController.printMedicalRecord(err, res);
+});
