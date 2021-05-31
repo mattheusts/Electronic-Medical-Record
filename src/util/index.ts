@@ -103,3 +103,9 @@ export function setDefaultPath(): void {
     global.DEFAULT_SAVE_IMAGES = globalSaveImages;
   }
 }
+
+// convert image
+export function imageToBase64(path: string): string {
+  const img = fs.readFileSync(path);
+  return new Buffer(img).toString('base64');
+}
