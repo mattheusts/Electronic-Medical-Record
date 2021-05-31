@@ -1,20 +1,21 @@
 import { BrowserWindow, IpcMainEvent } from 'electron';
 import { layoutMultilineText, PDFDocument, StandardFonts, TextAlignment } from 'pdf-lib';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 import * as path from 'path';
 import * as fs from 'fs';
-import { FilesService } from '../services/FilesService';
+
 import { UsersService } from '../services/UsersService';
 import { PrescriptionService } from '../services/PrescriptionsService';
+import { imageToBase64 } from '../util';
 
 class PDFController {
-  private filesService: FilesService;
   private prescriptionsService: PrescriptionService;
   private usersService: UsersService;
 
   private mainWindow: BrowserWindow;
 
   constructor(mainWindow: BrowserWindow) {
-    this.filesService = new FilesService();
     this.prescriptionsService = new PrescriptionService();
     this.usersService = new UsersService();
 
@@ -68,6 +69,42 @@ class PDFController {
     const defaultPathSavePDF = path.join(global.DEFAULT_SAVE_PATH, prescription.id.concat('.pdf'));
 
     fs.writeFileSync(defaultPathSavePDF, pdfBytes);
+
+    this.mainWindow.loadFile(path.join(__dirname, '../../public/pdf.html'));
+
+    setTimeout(() => {
+      this.mainWindow.webContents.send('showPDF', defaultPathSavePDF);
+    }, 500);
+  }
+
+  async printRequestedExams(err: IpcMainEvent, id: string): Promise<void> {
+    const prescription = await this.prescriptionsService.findOne(id);
+
+    const doc = new jsPDF();
+
+    let finalY = doc.lastAutoTable.finalY || 10;
+
+    let twoPhoto = 0;
+    for (const file of prescription.files) {
+      if (finalY + 100 >= 300) {
+        doc.addPage('a4');
+        finalY = 10;
+      }
+
+      const base64Img = imageToBase64(file.path);
+      if (twoPhoto == 1) {
+        doc.addImage(base64Img, `${file.type.split('/')[1]}`, 104, finalY, 100, 100);
+        finalY += 110;
+        twoPhoto = 0;
+        continue;
+      }
+      doc.addImage(base64Img, `${file.type.split('/')[1]}`, 2, finalY, 100, 100);
+      twoPhoto++;
+    }
+
+    const defaultPathSavePDF = path.join(global.DEFAULT_SAVE_PATH, prescription.id.concat('.pdf'));
+
+    doc.save(defaultPathSavePDF);
 
     this.mainWindow.loadFile(path.join(__dirname, '../../public/pdf.html'));
 

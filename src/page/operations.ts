@@ -28,3 +28,7 @@ export function editPrescription(prescription_id: string, user_id: string): void
 export function printPrescription(id: string): void {
   ipcRenderer.send('printPrescription', id);
 }
+
+export function printRequestedExams(id: string): void {
+  ipcRenderer.send('printRequestedExams', id);
+}
