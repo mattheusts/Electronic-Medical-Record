@@ -38,6 +38,14 @@ ipcRenderer.on('userInfo', (event, res: IUserCreate) => {
 
   const prescriptionsSize = res.prescriptions.length;
 
+  res.prescriptions = res.prescriptions.sort((p1, p2) => {
+    const d1 = new Date(p1.created_at);
+    const d2 = new Date(p2.created_at);
+    return d1 - d2;
+  });
+
+  res.prescriptions.reverse();
+
   res.prescriptions.forEach((p) => {
     if (p.prescription.length >= 300) {
       p.prescription = p.prescription.slice(0, 300);
