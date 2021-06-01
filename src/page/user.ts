@@ -36,19 +36,19 @@ ipcRenderer.on('userInfo', (event, res: IUserCreate) => {
   name.innerText = res.name;
   birth.innerText = res.birth;
 
-  if (res.prescriptions.length <= 0) {
+  const prescriptionsSize = res.prescriptions.length;
+
+  res.prescriptions.forEach((p) => {
+    if (p.prescription.length >= 300) {
+      p.prescription = p.prescription.slice(0, 300);
+      p.prescription += ' ...';
+    }
+  });
+
+  if (prescriptionsSize <= 0) {
     prescription.innerText = 'Não há prescrições';
   } else {
-    if (res.prescriptions[0].prescription.length >= 150) {
-      res.prescriptions[0].prescription = res.prescriptions[0].prescription.slice(0, 150);
-      res.prescriptions[0].prescription += ' ...';
-      prescription.innerText = res.prescriptions[0].prescription;
-    }
-
-    if (res.prescriptions[0].prescription.length < 150)
-      prescription.innerText = res.prescriptions[0].prescription;
-
-    prescriptionDate.innerText = res.prescriptions[0].prescription_date;
+    prescription.innerText = res.prescriptions[prescriptionsSize - 1].prescription;
   }
 
   const oldPrescriptions = document.getElementById('old_prescriptions') as HTMLElement;
