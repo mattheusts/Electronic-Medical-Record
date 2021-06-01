@@ -7,12 +7,6 @@ import { IPrescriptionCreate } from '../services/PrescriptionsService';
 import { Prescription } from '../database/models/Prescription';
 import { IFileCreate } from '../services/FilesService';
 
-export interface usersAndPrescription {
-  id: string;
-  name: string;
-  prescription: string;
-}
-
 export interface UserAndPrescriptions {
   id?: string;
   name: string;
@@ -62,11 +56,6 @@ export interface UserAndPrescriptionAndFiles {
   updated_at?: Date;
 }
 
-export interface PDFPrescription {
-  date: string;
-  prescription: string;
-}
-
 export interface Person {
   name: string;
   naturalness: string;
@@ -74,11 +63,6 @@ export interface Person {
   dad: string;
   sex: string;
   birth: string;
-}
-
-export interface PDFUserPrescription {
-  person: Person;
-  prescriptions: PDFPrescription[];
 }
 
 export interface PrescriptionAndPhotos {
