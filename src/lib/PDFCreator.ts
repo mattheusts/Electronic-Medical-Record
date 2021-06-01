@@ -1,4 +1,7 @@
 import { jsPDF } from 'jspdf';
+import { PDFDocument, StandardFonts } from 'pdf-lib';
+import * as path from 'path';
+import * as fs from 'fs';
 import { imageToBase64, jsPDFWithPlugin, UserAndPrescriptionAndFiles } from '../util';
 import 'jspdf-autotable';
 
@@ -19,13 +22,56 @@ function checked(check: boolean): string {
   }
 }
 
+async function mergePDFs(pdfsToMerges: ArrayBuffer[]): Promise<Uint8Array> {
+  const mergedPdf = await PDFDocument.create();
+  const actions = pdfsToMerges.map(async (pdfBuffer) => {
+    const pdf = await PDFDocument.load(pdfBuffer);
+    const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
+    copiedPages.forEach((page) => {
+      mergedPdf.addPage(page);
+    });
+  });
+  await Promise.all(actions);
+  const mergedPdfFile = await mergedPdf.save();
+  return mergedPdfFile;
+}
+
+async function headerPDF(title: string): Promise<Uint8Array> {
+  const loadBasePdf = fs.readFileSync(path.join(__dirname, '../../public/pdf/base.pdf'));
+  const pdfDoc = await PDFDocument.load(loadBasePdf);
+  const pages = pdfDoc.getPages();
+
+  const { width, height } = pages[0].getSize();
+
+  const timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman);
+
+  const startingPositon = 550;
+
+  pages[0].drawText(`${title}`, {
+    y: startingPositon - 100,
+    x: width / 2 - 100,
+    size: 32,
+    font: timesRomanFont,
+  });
+
+  return await pdfDoc.save();
+}
+
 export async function printAllPrescription(
   data: UserAndPrescriptionAndFiles,
   defaultPathSavePDF: string
 ): Promise<void> {
   const doc = new jsPDF() as unknown as jsPDFWithPlugin;
+  const base64Img = imageToBase64(path.join(__dirname, '../../public/img/human-brain-grey.png'));
+
+  // Inserindo imagem como background no documento
+  // doc.addImage(base64Img, 'PNG', 55, 100, 100, 100);
+  // doc.internal.events.subscribe('addPage', function () {
+  //   doc.addImage(base64Img, 'PNG', 55, 100, 100, 100);
+  // });
+
   doc.setFontSize(16);
-  doc.text('PRONTUÁRIO', 105, 10, { align: 'center' });
+  doc.text('INFORMÇÕES DO PACIENTE', 105, 10, { align: 'center' });
 
   doc.autoTable({
     theme: 'plain',
@@ -232,7 +278,7 @@ export async function printAllPrescription(
 
   finalY = doc.lastAutoTable.finalY || 10;
   doc.setFontSize(14);
-  doc.text('Imagens', 105, finalY + 10, { align: 'center' });
+  doc.text('Exames', 105, finalY + 10, { align: 'center' });
   finalY += 20;
 
   let twoPhoto = 0;
@@ -253,5 +299,10 @@ export async function printAllPrescription(
     twoPhoto++;
   }
 
-  doc.save(defaultPathSavePDF);
+  const header = await headerPDF('PRONTUÁRIO');
+
+  const prescriptionDoc = new Uint8Array(doc.output('arraybuffer'));
+  const pdfBytes = await mergePDFs([header, prescriptionDoc]);
+
+  fs.writeFileSync(defaultPathSavePDF, pdfBytes);
 }
