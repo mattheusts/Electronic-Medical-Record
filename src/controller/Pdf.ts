@@ -56,7 +56,7 @@ class PDFController {
     const date = new Date(prescription.created_at);
 
     pages[0].drawText(
-      `Prescrição feita em: ${date.toLocaleDateString('pt-br', { dateStyle: 'long' })}`,
+      `Prescrição feita em: ${date.toLocaleDateString('pt-br', { dateStyle: 'long' } as unknown)}`,
       {
         y: startingPositon - 40,
         x: width / 2 - 200,
