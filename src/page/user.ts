@@ -47,6 +47,8 @@ ipcRenderer.on('userInfo', (event, res: IUserCreate) => {
 
   res.prescriptions.reverse();
 
+  prescriptionDate.innerText = res.prescriptions[0].prescription_date;
+
   res.prescriptions.forEach((p) => {
     if (p.prescription.length >= 300) {
       p.prescription = p.prescription.slice(0, 300);
