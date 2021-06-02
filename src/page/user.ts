@@ -41,6 +41,7 @@ ipcRenderer.on('userInfo', (event, res: IUserCreate) => {
   res.prescriptions = res.prescriptions.sort((p1, p2) => {
     const d1 = new Date(p1.created_at);
     const d2 = new Date(p2.created_at);
+
     return d1 - d2;
   });
 
@@ -56,7 +57,11 @@ ipcRenderer.on('userInfo', (event, res: IUserCreate) => {
   if (prescriptionsSize <= 0) {
     prescription.innerText = 'Não há prescrições';
   } else {
-    prescription.innerText = res.prescriptions[prescriptionsSize - 1].prescription;
+    if (res.prescriptions[0].prescription.length >= 160) {
+      let text = res.prescriptions[0].prescription.slice(0, 160);
+      text += ' ...';
+      prescription.innerText = text;
+    } else prescription.innerText = res.prescriptions[0].prescription;
   }
 
   const oldPrescriptions = document.getElementById('old_prescriptions') as HTMLElement;
