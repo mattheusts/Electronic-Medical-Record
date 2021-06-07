@@ -59,7 +59,13 @@ const gallery = document.getElementById('march_gallery') as HTMLElement;
 ipcRenderer.on(
   'LoadEditPrescription',
   (error, userAndPrescriptionAndFiles: UserAndPrescriptionAndFiles) => {
+    setUserInfo({
+      name: userAndPrescriptionAndFiles.name,
+      birth: userAndPrescriptionAndFiles.birth,
+    });
+
     const inputValues = inputFields();
+
     Object.entries(userAndPrescriptionAndFiles.prescription).forEach(([key, value]) => {
       if (typeof value === 'boolean') inputValues[key].checked = value;
 
@@ -108,9 +114,13 @@ export function deleteFile(name: string): void {
 }
 
 ipcRenderer.on('newPrescriptions', (event, userAndPrescriptions: UserAndPrescriptions) => {
-  const name = document.getElementById('name') as HTMLElement;
-  const birth = document.getElementById('birth') as HTMLElement;
-
-  name.textContent = userAndPrescriptions.name;
-  birth.textContent = userAndPrescriptions.birth;
+  setUserInfo({ name: userAndPrescriptions.name, birth: userAndPrescriptions.birth });
 });
+
+function setUserInfo({ name, birth }) {
+  const nameInput = document.getElementById('name') as HTMLElement;
+  const birthInput = document.getElementById('birth') as HTMLElement;
+
+  nameInput.textContent = name;
+  birthInput.textContent = birth;
+}
