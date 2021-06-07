@@ -24,7 +24,7 @@ class UserController {
   }
 
   async delete(event: IpcMainEvent, id: string): Promise<void> {
-    const all = await this.userService.findOneAllCascade(id);
+    const all = await this.userService.findOne(id, ['prescriptions', 'prescriptions.files']);
     await this.userService.deleteAllCascade(id);
 
     const allFiles = [];
@@ -53,7 +53,7 @@ class UserController {
   }
 
   async userInfo(event: IpcMainEvent, user_id: string): Promise<void> {
-    const user = await this.userService.findOne(user_id);
+    const user = await this.userService.findOne(user_id, ['prescriptions']);
 
     this.mainWindow.webContents.send('userInfo', user);
   }

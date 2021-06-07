@@ -40,11 +40,11 @@ class UsersService {
     return this.usersRepository.save({ ...oldUser, ...user });
   }
 
-  async findOne(id: string): Promise<User> {
+  async findOne(id: string, relations?: string[]): Promise<User> {
     const user = await this.usersRepository.findOne({
       where: { id },
       order: { updated_at: 'ASC' },
-      relations: ['prescriptions'],
+      relations,
     });
     return user;
   }
@@ -52,13 +52,6 @@ class UsersService {
   async findAll(): Promise<User[]> {
     const users = await this.usersRepository.find({ order: { name: 'ASC' } });
     return users;
-  }
-
-  async findOneAllCascade(id: string): Promise<User> {
-    return await this.usersRepository.findOne({
-      where: { id },
-      relations: ['prescriptions', 'prescriptions.files'],
-    });
   }
 
   async deleteAllCascade(user_id: string): Promise<void> {
