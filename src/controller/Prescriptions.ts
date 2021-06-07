@@ -102,7 +102,10 @@ class PrescriptionsController {
 
   async InitEditPrescription(err: IpcMainEvent, res): Promise<void> {
     const user = await this.usersService.findOne(res.user_id);
-    const prescription = await this.prescriptionsService.findOneAllCascade(res.prescription_id);
+    const prescription = await this.prescriptionsService.findOne(res.prescription_id, [
+      'user',
+      'files',
+    ]);
 
     const userAndPrescription: UserAndPrescriptionAndFiles = {
       ...user,

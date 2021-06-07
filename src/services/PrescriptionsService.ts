@@ -73,17 +73,10 @@ class PrescriptionService {
     return newPrescription;
   }
 
-  async findOne(id: string): Promise<Prescription> {
+  async findOne(id: string, relations?: string[]): Promise<Prescription> {
     return await this.prescriptionRepository.findOne({
       where: { id },
-      relations: ['files'],
-    });
-  }
-
-  async findOneAllCascade(id: string): Promise<Prescription> {
-    return await this.prescriptionRepository.findOne({
-      where: { id },
-      relations: ['user', 'files'],
+      relations,
     });
   }
 

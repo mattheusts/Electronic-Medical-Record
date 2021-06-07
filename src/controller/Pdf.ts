@@ -114,7 +114,7 @@ class PDFController {
   }
 
   async printMedicalRecord(err: IpcMainEvent, id: string): Promise<void> {
-    const data = await this.prescriptionsService.findOneAllCascade(id);
+    const data = await this.prescriptionsService.findOne(id, ['user', 'files']);
 
     const defaultPathSavePDF = path.join(global.DEFAULT_SAVE_PATH, data.id.concat('.pdf'));
 
