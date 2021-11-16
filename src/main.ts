@@ -1,4 +1,4 @@
-import { app, BrowserWindow, screen } from 'electron';
+import { app, BrowserWindow, ipcMain, screen } from 'electron';
 import * as path from 'path';
 import 'reflect-metadata';
 import { initDB } from './database';
@@ -52,3 +52,8 @@ app.on('window-all-closed', () => {
     require('./events/Pdf');
   });
 })();
+
+ipcMain.on('back-to-search', async (err) => {
+  // mainWindow.loadFile(path.join(__dirname, `../public/${pages}.html`));
+  mainWindow.webContents.goBack();
+});
