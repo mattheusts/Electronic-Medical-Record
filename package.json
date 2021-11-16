@@ -1,6 +1,6 @@
 {
   "name": "electronic-medical-record",
-  "version": "1.0.1",
+  "version": "1.0.6",
   "description": "Electron application written with Typescript",
   "main": "dist/main.js",
   "scripts": {
@@ -27,40 +27,11 @@
       "buildResources": "public/**/*"
     },
     "win": {
-      "target": [
-        {
-          "target": [
-            "nsis",
-            "msi"
-          ],
-          "arch": [
-            "x64",
-            "ia32"
-          ]
-        }
-      ],
       "icon": "public/img/medical-records.png"
     },
-    "nsis": {
-      "installerIcon": "public/img/medical-records.png",
-      "installerHeaderIcon": "public/img/medical-records.png",
-      "deleteAppDataOnUninstall": false
-    },
-    "dmg": {
-      "sign": false
-    },
-    "publish": [
-      {
-        "provider": "github",
-        "owner": "matthaw",
-        "repo": "Electronic-Medical-Record",
-        "releaseType": "release"
-      }
-    ],
     "extraFiles": [
       "credentials"
-    ],
-    "platform": "win32"
+    ]
   },
   "repository": "https://github.com/matthaw/Electronic-Medical-Record",
   "keywords": [
