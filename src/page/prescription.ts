@@ -1,7 +1,11 @@
 import { ipcRenderer } from 'electron';
 import { IPrescriptionCreate } from '../services/PrescriptionsService';
 import { IFileCreate } from '../services/FilesService';
-import { PrescriptionAndPhotos, UserAndPrescriptionAndFiles, UserAndPrescriptions } from '../util';
+import {
+  PrescriptionAndPhotos,
+  UserAndPrescriptionAndFiles,
+  UserAndPrescriptions,
+} from '../util';
 import { PhotoUpload } from '../util/Photo';
 import { inputFields } from './prescriptionsFields';
 
@@ -24,13 +28,17 @@ window.onload = () => {
 };
 
 document.addEventListener('click', function (event: any) {
-  if (event.target.id === 'save_and_print' || event.target.id === 'save_prescriptions') {
+  if (
+    event.target.id === 'save_and_print' ||
+    event.target.id === 'save_prescriptions'
+  ) {
     event.preventDefault();
 
     const inputData = inputFields();
     const prescriptionValues = {};
     Object.entries(inputData).forEach(([key, value]) => {
-      prescriptionValues[key] = value.type === 'checkbox' ? value.checked : value.value;
+      prescriptionValues[key] =
+        value.type === 'checkbox' ? value.checked : value.value;
     });
 
     const res: PrescriptionAndPhotos = {
@@ -66,13 +74,15 @@ ipcRenderer.on(
 
     const inputValues = inputFields();
 
-    Object.entries(userAndPrescriptionAndFiles.prescription).forEach(([key, value]) => {
-      if (typeof value === 'boolean') inputValues[key].checked = value;
+    Object.entries(userAndPrescriptionAndFiles.prescription).forEach(
+      ([key, value]) => {
+        if (typeof value === 'boolean') inputValues[key].checked = value;
 
-      if (typeof value === 'string') {
-        if (inputValues[key] !== undefined) inputValues[key].value = value;
+        if (typeof value === 'string') {
+          if (inputValues[key] !== undefined) inputValues[key].value = value;
+        }
       }
-    });
+    );
 
     photosUpload.addFile(userAndPrescriptionAndFiles.files);
     gallery.appendChild(photosUpload.render());
@@ -80,7 +90,9 @@ ipcRenderer.on(
 );
 
 // Gallery
-const marcha_files = document.getElementById('marcha_files') as HTMLInputElement;
+const marcha_files = document.getElementById(
+  'marcha_files'
+) as HTMLInputElement;
 
 marcha_files.onchange = function () {
   gallery.innerHTML = '';
@@ -113,9 +125,15 @@ export function deleteFile(name: string): void {
   gallery.appendChild(photosUpload.render());
 }
 
-ipcRenderer.on('newPrescriptions', (event, userAndPrescriptions: UserAndPrescriptions) => {
-  setUserInfo({ name: userAndPrescriptions.name, birth: userAndPrescriptions.birth });
-});
+ipcRenderer.on(
+  'newPrescriptions',
+  (event, userAndPrescriptions: UserAndPrescriptions) => {
+    setUserInfo({
+      name: userAndPrescriptions.name,
+      birth: userAndPrescriptions.birth,
+    });
+  }
+);
 
 function setUserInfo({ name, birth }) {
   const nameInput = document.getElementById('name') as HTMLElement;
@@ -124,3 +142,8 @@ function setUserInfo({ name, birth }) {
   nameInput.textContent = name;
   birthInput.textContent = birth;
 }
+
+const backButton = document.getElementsByClassName('back-icon');
+backButton.item(0).addEventListener('click', () => {
+  ipcRenderer.send('back-to-search');
+});

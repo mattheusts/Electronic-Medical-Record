@@ -58,3 +58,8 @@ updateUserButton.addEventListener('click', () => {
 
   ipcRenderer.send('updateUser', user);
 });
+
+const backButton = document.getElementsByClassName('back-icon');
+backButton.item(0).addEventListener('click', () => {
+  ipcRenderer.send('back-to-search');
+});

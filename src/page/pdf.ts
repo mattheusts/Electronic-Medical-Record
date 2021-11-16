@@ -14,3 +14,8 @@ ipcRenderer.on('showPDF', async (event, res: string) => {
     loader.className = 'hidden_loader';
   }, 2000);
 });
+
+const backButton = document.getElementsByClassName('back-icon');
+backButton.item(0).addEventListener('click', () => {
+  ipcRenderer.send('back-to-search');
+});

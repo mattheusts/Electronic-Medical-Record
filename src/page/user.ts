@@ -30,8 +30,12 @@ window.onload = function () {
 ipcRenderer.on('userInfo', (event, res: IUserCreate) => {
   const name = document.getElementById('name') as HTMLInputElement;
   const birth = document.getElementById('birth') as HTMLInputElement;
-  const prescription = document.getElementById('prescription') as HTMLInputElement;
-  const prescriptionDate = document.getElementById('prescriptionDate') as HTMLInputElement;
+  const prescription = document.getElementById(
+    'prescription'
+  ) as HTMLInputElement;
+  const prescriptionDate = document.getElementById(
+    'prescriptionDate'
+  ) as HTMLInputElement;
 
   name.innerText = res.name;
   birth.innerText = res.birth;
@@ -66,7 +70,9 @@ ipcRenderer.on('userInfo', (event, res: IUserCreate) => {
     } else prescription.innerText = res.prescriptions[0].prescription;
   }
 
-  const oldPrescriptions = document.getElementById('old_prescriptions') as HTMLElement;
+  const oldPrescriptions = document.getElementById(
+    'old_prescriptions'
+  ) as HTMLElement;
   const render = Render.renderOldPrescriptions(res);
   oldPrescriptions.appendChild(render);
 });
@@ -81,3 +87,8 @@ export function setId(id: string): void {
   const printMedicalRecord = document.getElementById('print_medical_record');
   printMedicalRecord.setAttribute('onclick', `printMedicalRecord('${id}')`);
 }
+
+const backButton = document.getElementsByClassName('back-icon');
+backButton.item(0).addEventListener('click', () => {
+  ipcRenderer.send('back-to-search', 'search');
+});
