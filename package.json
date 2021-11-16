@@ -1,6 +1,6 @@
 {
   "name": "electronic-medical-record",
-  "version": "1.0.6",
+  "version": "1.0.8",
   "description": "Electron application written with Typescript",
   "main": "dist/main.js",
   "scripts": {
@@ -28,6 +28,11 @@
     },
     "win": {
       "icon": "public/img/medical-records.png"
+    },
+    "publish": {
+      "provider": "github",
+      "owner": "matthaw",
+      "repo": "Electronic-Medical-Record"
     },
     "extraFiles": [
       "credentials"
