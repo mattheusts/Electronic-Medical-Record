@@ -1,10 +1,15 @@
-import { NsisUpdater } from 'electron-updater';
-// Or MacUpdater, AppImageUpdater
+import { BrowserWindow } from 'electron';
+import { NsisUpdater, UpdateCheckResult } from 'electron-updater';
 
 class AppUpdater {
   private autoUpdater: NsisUpdater;
+  private sha512: string;
+  private result: UpdateCheckResult;
+  private mainWindow: BrowserWindow;
 
-  constructor() {
+  constructor(mainWindow: BrowserWindow) {
+    this.mainWindow = mainWindow;
+
     const options = {
       provider: 'github',
       owner: 'matthaw',
@@ -12,6 +17,11 @@ class AppUpdater {
     } as any;
 
     this.autoUpdater = new NsisUpdater(options);
+    this.autoUpdater.logger = require('electron-log');
+  }
+
+  async checkForUpdatesAndNotify() {
+    this.result = await this.autoUpdater.checkForUpdatesAndNotify();
   }
 
   getUpdater() {
@@ -22,20 +32,16 @@ class AppUpdater {
     return this.autoUpdater.checkForUpdatesAndNotify();
   }
 
-  downloadProgress(callback: (sender: string, progress: any) => void) {
+  downloadProgress() {
     this.autoUpdater.on('download-progress', (progress) => {
-      callback('download-progress', progress);
+      this.mainWindow.webContents.send('download-progress', progress);
     });
   }
 
-  async downloadAndInstall() {
-    (await this.autoUpdater.checkForUpdatesAndNotify()).downloadPromise
-      .then(() => {
-        this.autoUpdater.quitAndInstall();
-      })
-      .catch((err) => {
-        console.error('Não foi possível relizar o download! ' + err.message);
-      });
+  checkIsDownloaded() {
+    this.autoUpdater.on('update-downloaded', (info) => {
+      this.autoUpdater.quitAndInstall();
+    });
   }
 }
 
