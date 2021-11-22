@@ -6,6 +6,12 @@ import { setDefaultPath } from './util';
 
 setDefaultPath();
 
+// Object.defineProperty(app, 'isPackaged', {
+//   get() {
+//     return true;
+//   },
+// });
+
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require('electron-reload')(['index.html', 'search.html']);
 let mainWindow: BrowserWindow = null;
@@ -26,7 +32,7 @@ function createWindow() {
   mainWindow.loadFile(path.join(__dirname, '../public/search.html'));
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+  // mainWindow.webContents.openDevTools();
 }
 
 app.on('ready', () => {
@@ -43,17 +49,19 @@ app.on('window-all-closed', () => {
 });
 
 (async () => {
-  initDB().then(() => {
+  initDB().then(async () => {
     global.mainWindow = mainWindow;
 
     require('./events/Search');
     require('./events/User');
     require('./events/Prescriptions');
     require('./events/Pdf');
+    require('./events/Update');
   });
 })();
 
-ipcMain.on('back-to-search', async (err) => {
-  // mainWindow.loadFile(path.join(__dirname, `../public/${pages}.html`));
+// Global events
+
+ipcMain.on('back-to-search', (err) => {
   mainWindow.webContents.goBack();
 });
