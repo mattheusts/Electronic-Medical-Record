@@ -1,6 +1,6 @@
 {
   "name": "electronic-medical-record",
-  "version": "1.0.6",
+  "version": "1.0.10",
   "description": "Electron application written with Typescript",
   "main": "dist/main.js",
   "scripts": {
@@ -13,6 +13,7 @@
     "start": "concurrently \"yarn start:tsc\" \"yarn start:nodemon\"",
     "pre-pack": "electron-compile --appDir . ./src",
     "package": "electron-builder --dir",
+    "build": "tsc",
     "dist": "build",
     "publish": "electron-builder -p always"
   },
@@ -27,6 +28,9 @@
       "buildResources": "public/**/*"
     },
     "win": {
+      "publish": [
+        "github"
+      ],
       "icon": "public/img/medical-records.png"
     },
     "publish": {
@@ -49,6 +53,7 @@
   "author": "Matheus Teixeira",
   "license": "MIT",
   "devDependencies": {
+    "@types/bootstrap": "^5.1.6",
     "@types/electron": "^1.6.10",
     "@types/fs-extra": "^9.0.11",
     "@types/image-to-base64": "^2.1.0",
@@ -75,6 +80,7 @@
     "typescript": "^3.9.5"
   },
   "dependencies": {
+    "electron-log": "^4.4.1",
     "electron-reload": "^1.5.0",
     "electron-updater": "^4.3.9",
     "fs-extra": "^9.1.0",
@@ -87,7 +93,6 @@
     "sqlite3": "^5.0.2",
     "typeface-roboto": "^1.1.13",
     "typeorm": "^0.2.31",
-    "uuid": "^8.3.2",
-    "electron-log": "^4.4.1"
+    "uuid": "^8.3.2"
   }
 }
