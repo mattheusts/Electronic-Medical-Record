@@ -18,7 +18,7 @@ class AppUpdater {
     this.autoUpdater = new NsisUpdater(options);
     this.autoUpdater.autoDownload = false;
     this.autoUpdater.autoInstallOnAppQuit = false;
-    this.autoUpdater.allowDowngrade = true; // test dev
+    // this.autoUpdater.allowDowngrade = true; // test dev
 
     this.autoUpdater.logger = require('electron-log');
 
