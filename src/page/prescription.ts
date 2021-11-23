@@ -28,10 +28,7 @@ window.onload = () => {
 };
 
 document.addEventListener('click', function (event: any) {
-  if (
-    event.target.id === 'save_and_print' ||
-    event.target.id === 'save_prescriptions'
-  ) {
+  if (event.target.id === 'save_and_print' || event.target.id === 'cancel') {
     event.preventDefault();
 
     const inputData = inputFields();
@@ -56,8 +53,8 @@ document.addEventListener('click', function (event: any) {
         ipcRenderer.send('updatePrescription', res);
       }
       if (!prescription_id) ipcRenderer.send('savePrescription', res);
-    } else if (event.target.id === 'save_and_print') {
-      ipcRenderer.send('savePrescriptionAndPrint', res);
+    } else if (event.target.id === 'cancel') {
+      ipcRenderer.send('back-to-search');
     }
   }
 });
