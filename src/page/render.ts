@@ -63,7 +63,10 @@ export class Render {
         const editButton = document.createElement('button');
         editButton.innerText = 'Editar';
         editButton.className = 'btn btn-primary btn-sm';
-        editButton.setAttribute('onclick', `editPrescription('${prescription.id}', '${user.id}')`);
+        editButton.setAttribute(
+          'onclick',
+          `editPrescription('${prescription.id}', '${user.id}')`
+        );
 
         const printButton = document.createElement('button');
         printButton.innerText = 'Imprimir';
@@ -75,7 +78,12 @@ export class Render {
         const deleteButton = document.createElement('button');
         deleteButton.innerText = 'Deletar';
         deleteButton.className = 'btn btn-danger btn-sm';
-        deleteButton.setAttribute('onclick', `deletePrescription('${prescription.id}')`);
+        deleteButton.setAttribute(
+          'onclick',
+          `confirmDeletePrescription('${prescription.id}')`
+        );
+        deleteButton.setAttribute('data-bs-toggle', 'modal');
+        deleteButton.setAttribute('data-bs-target', '#staticBackdrop');
 
         divButtons.appendChild(editButton);
         divButtons.appendChild(printButton);

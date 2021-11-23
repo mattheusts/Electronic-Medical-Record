@@ -17,14 +17,22 @@ window.onload = function () {
   btn2.className = 'btn btn-success';
   btn2.setAttribute('onclick', `newPrescription('${id}')`);
 
-  const btn4 = document.createElement('button');
-  btn4.innerText = 'Deletar';
-  btn4.className = 'btn btn-danger';
-  btn4.setAttribute('onclick', `deleteUser('${id}')`);
+  const btn3 = document.createElement('button');
+  btn3.innerText = 'Deletar';
+  btn3.className = 'btn btn-danger';
+  btn3.setAttribute('data-bs-toggle', 'modal');
+  btn3.setAttribute('data-bs-target', '#staticBackdrop');
+  btn3.addEventListener('click', () => {
+    document
+      .getElementById('confirm')
+      ?.setAttribute('onclick', `deleteUser('${id}')`);
+    document.getElementById('confirm-message-modal').innerText =
+      'Deseja realmente deletar esse usuário?';
+  });
 
   divButtons.appendChild(btn1);
   divButtons.appendChild(btn2);
-  divButtons.appendChild(btn4);
+  divButtons.appendChild(btn3);
 };
 
 ipcRenderer.on('userInfo', (event, res: IUserCreate) => {
