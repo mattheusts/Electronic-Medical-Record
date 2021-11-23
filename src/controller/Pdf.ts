@@ -1,5 +1,10 @@
 import { BrowserWindow, IpcMainEvent } from 'electron';
-import { layoutMultilineText, PDFDocument, StandardFonts, TextAlignment } from 'pdf-lib';
+import {
+  layoutMultilineText,
+  PDFDocument,
+  StandardFonts,
+  TextAlignment,
+} from 'pdf-lib';
 import jsPDF from 'jspdf';
 import * as path from 'path';
 import * as fs from 'fs';
@@ -25,7 +30,9 @@ class PDFController {
   async printPrescription(err: IpcMainEvent, id: string): Promise<void> {
     const prescription = await this.prescriptionsService.findOne(id);
 
-    const loadBasePdf = fs.readFileSync(path.join(__dirname, '../../public/pdf/base.pdf'));
+    const loadBasePdf = fs.readFileSync(
+      path.join(__dirname, '../../public/pdf/base.pdf')
+    );
     const pdfDoc = await PDFDocument.load(loadBasePdf);
     const pages = pdfDoc.getPages();
 
@@ -39,7 +46,12 @@ class PDFController {
       alignment: TextAlignment.Center,
       font: timesRomanFont,
       fontSize: 12,
-      bounds: { x: width / 2 - 170, y: startingPositon, width: 400, height: 16 },
+      bounds: {
+        x: width / 2 - 170,
+        y: startingPositon,
+        width: 400,
+        height: 16,
+      },
     });
 
     for (let i = 0; i < multiText.lines.length; i++) {
@@ -56,7 +68,9 @@ class PDFController {
     const date = new Date(prescription.created_at);
 
     pages[0].drawText(
-      `Prescrição feita em: ${date.toLocaleDateString('pt-br', { dateStyle: 'long' } as unknown)}`,
+      `Prescrição feita em: ${date.toLocaleDateString('pt-br', {
+        dateStyle: 'long',
+      } as unknown)}`,
       {
         y: startingPositon - 40,
         x: width / 2 - 200,
@@ -66,7 +80,10 @@ class PDFController {
 
     const pdfBytes = await pdfDoc.save();
 
-    const defaultPathSavePDF = path.join(global.DEFAULT_SAVE_PATH, prescription.id.concat('.pdf'));
+    const defaultPathSavePDF = path.join(
+      global.DEFAULT_SAVE_PATH,
+      prescription.id.concat('.pdf')
+    );
 
     fs.writeFileSync(defaultPathSavePDF, pdfBytes);
 
@@ -78,7 +95,7 @@ class PDFController {
   }
 
   async printRequestedExams(err: IpcMainEvent, id: string): Promise<void> {
-    const prescription = await this.prescriptionsService.findOne(id);
+    const prescription = await this.prescriptionsService.findOne(id, ['files']);
 
     const doc = new jsPDF() as jsPDFWithPlugin;
 
@@ -93,16 +110,33 @@ class PDFController {
 
       const base64Img = imageToBase64(file.path);
       if (twoPhoto == 1) {
-        doc.addImage(base64Img, `${file.type.split('/')[1]}`, 104, finalY, 100, 100);
+        doc.addImage(
+          base64Img,
+          `${file.type.split('/')[1]}`,
+          104,
+          finalY,
+          100,
+          100
+        );
         finalY += 110;
         twoPhoto = 0;
         continue;
       }
-      doc.addImage(base64Img, `${file.type.split('/')[1]}`, 2, finalY, 100, 100);
+      doc.addImage(
+        base64Img,
+        `${file.type.split('/')[1]}`,
+        2,
+        finalY,
+        100,
+        100
+      );
       twoPhoto++;
     }
 
-    const defaultPathSavePDF = path.join(global.DEFAULT_SAVE_PATH, prescription.id.concat('.pdf'));
+    const defaultPathSavePDF = path.join(
+      global.DEFAULT_SAVE_PATH,
+      prescription.id.concat('.pdf')
+    );
 
     doc.save(defaultPathSavePDF);
 
@@ -116,7 +150,10 @@ class PDFController {
   async printMedicalRecord(err: IpcMainEvent, id: string): Promise<void> {
     const data = await this.prescriptionsService.findOne(id, ['user', 'files']);
 
-    const defaultPathSavePDF = path.join(global.DEFAULT_SAVE_PATH, data.id.concat('.pdf'));
+    const defaultPathSavePDF = path.join(
+      global.DEFAULT_SAVE_PATH,
+      data.id.concat('.pdf')
+    );
 
     printAllPrescription(
       { ...data.user, prescription: data, files: data.files },
