@@ -28,7 +28,10 @@ window.onload = () => {
 };
 
 document.addEventListener('click', function (event: any) {
-  if (event.target.id === 'save_and_print' || event.target.id === 'cancel') {
+  if (
+    event.target.id === 'save_prescriptions' ||
+    event.target.id === 'cancel'
+  ) {
     event.preventDefault();
 
     const inputData = inputFields();
