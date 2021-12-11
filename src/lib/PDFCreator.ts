@@ -2,11 +2,7 @@ import { jsPDF } from 'jspdf';
 import { PDFDocument, StandardFonts } from 'pdf-lib';
 import * as path from 'path';
 import * as fs from 'fs';
-import {
-  imageToBase64,
-  jsPDFWithPlugin,
-  UserAndPrescriptionAndFiles,
-} from '../util';
+import { imageToBase64, jsPDFWithPlugin, UserAndPrescriptionAndFiles } from '../util';
 import 'jspdf-autotable';
 
 function handleParseSchool(schooling: string): string {
@@ -41,9 +37,7 @@ async function mergePDFs(pdfsToMerges: ArrayBuffer[]): Promise<Uint8Array> {
 }
 
 async function headerPDF(title: string): Promise<Uint8Array> {
-  const loadBasePdf = fs.readFileSync(
-    path.join(__dirname, '../../public/pdf/base.pdf')
-  );
+  const loadBasePdf = fs.readFileSync(path.join(__dirname, '../../public/pdf/base.pdf'));
   const pdfDoc = await PDFDocument.load(loadBasePdf);
   const pages = pdfDoc.getPages();
 
@@ -68,9 +62,7 @@ export async function printAllPrescription(
   defaultPathSavePDF: string
 ): Promise<void> {
   const doc = new jsPDF() as unknown as jsPDFWithPlugin;
-  const base64Img = imageToBase64(
-    path.join(__dirname, '../../public/img/human-brain-grey.png')
-  );
+  const base64Img = imageToBase64(path.join(__dirname, '../../public/img/human-brain-grey.png'));
 
   // Inserindo imagem como background no documento
   // doc.addImage(base64Img, 'PNG', 55, 100, 100, 100);
@@ -92,12 +84,7 @@ export async function printAllPrescription(
       ['Nome:', `${data.name}`, 'NATURALIDADE:', 'RJ'],
       ['MÂE:', `${data.mother}`, 'PAI:', `${data.dad}`],
       ['SEXO:', `${data.sex}`, 'DATA DE NASCIMENTO:', `${data.birth}`],
-      [
-        'RELIGIÃO:',
-        `${data.religion}`,
-        'ESCOLARIDADE:',
-        `${handleParseSchool(data.schooling)}`,
-      ],
+      ['RELIGIÃO:', `${data.religion}`, 'ESCOLARIDADE:', `${handleParseSchool(data.schooling)}`],
       ['PROFISSÃO:', `${data.profession}`],
     ],
   });
@@ -229,9 +216,7 @@ export async function printAllPrescription(
         `S.D PARAPARÉTICA: ${checked(data.prescription.paraparetica)}`,
       ],
       [
-        `S.D HIPERTENSÃO INTRACRANIANA: ${checked(
-          data.prescription.intracranial_hypertension
-        )}`,
+        `S.D HIPERTENSÃO INTRACRANIANA: ${checked(data.prescription.intracranial_hypertension)}`,
         `MONOPARÉTICA: ${checked(data.prescription.monoparetica)}`,
       ],
       [`SINDROME DO NMI: ${data.prescription.nmi}`],
@@ -240,14 +225,9 @@ export async function printAllPrescription(
 
   finalY = doc.lastAutoTable.finalY || 10;
   doc.setFontSize(14);
-  doc.text(
-    'Sindromes Relacionados a Função do Sistema Nervoso Autonomo',
-    105,
-    finalY + 10,
-    {
-      align: 'center',
-    }
-  );
+  doc.text('Sindromes Relacionados a Função do Sistema Nervoso Autonomo', 105, finalY + 10, {
+    align: 'center',
+  });
 
   doc.autoTable({
     theme: 'plain',
@@ -329,14 +309,7 @@ export async function printAllPrescription(
 
     const base64Img = imageToBase64(file.path);
     if (twoPhoto == 1) {
-      doc.addImage(
-        base64Img,
-        `${file.type.split('/')[1]}`,
-        104,
-        finalY,
-        100,
-        100
-      );
+      doc.addImage(base64Img, `${file.type.split('/')[1]}`, 104, finalY, 100, 100);
       finalY += 110;
       twoPhoto = 0;
       continue;
