@@ -23,37 +23,13 @@ export interface UserAndPrescriptions {
   updated_at?: Date;
 }
 
-export interface UserAndPrescription {
-  id?: string;
-  name: string;
-  naturalness: string;
-  mother: string;
-  dad: string;
-  sex: string;
-  birth: string;
-  religion: string;
-  schooling: string;
-  profession: string;
+export interface UserAndPrescription extends Omit<UserAndPrescriptions, 'prescriptions'>{
   prescription: Prescription;
-  created_at?: Date;
-  updated_at?: Date;
 }
 
-export interface UserAndPrescriptionAndFiles {
-  id?: string;
-  name: string;
-  naturalness: string;
-  mother: string;
-  dad: string;
-  sex: string;
-  birth: string;
-  religion: string;
-  schooling: string;
-  profession: string;
+export interface UserAndPrescriptionAndFiles extends Omit<UserAndPrescriptions, 'prescriptions'> {
   prescription: IPrescriptionCreate;
   files: IFileCreate[];
-  created_at?: Date;
-  updated_at?: Date;
 }
 
 export interface Person {
